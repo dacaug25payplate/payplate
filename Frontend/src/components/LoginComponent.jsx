@@ -50,9 +50,8 @@ function Login() {
               </button>
               <br />
                 <div className="text-center mt-3">
-                <a href="" className="d-block mb-2">
-                    Forgot Password?
-                </a>
+                    <Link to="/forgetpassword" className="d-block mb-2">Forget Password?</Link>
+                
 
                 <span className="me-1">Don't have an account?</span>
                 <Link to="/register">Register here</Link>
