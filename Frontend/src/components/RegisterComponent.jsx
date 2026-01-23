@@ -13,8 +13,121 @@ function RegisterComponent() {
     answer: ''
   });
 
+  const [errors, setErrors] = useState({});
+
+  const validateField = (name, value) => {
+    let errorMsg = "";
+
+    // USERNAME
+    if (name === "userName") {
+      if (!value.trim()) {
+        errorMsg = "Username is required";
+      } else if (value.trim().length <= 3) {
+        errorMsg = "Username must be more than 3 characters";
+      } else {
+        errorMsg = "Valid username ";
+      }
+    }
+
+    // PASSWORD
+    if (name === "password") {
+      if (!value) {
+        errorMsg = "Password is required";
+      } else if (value.length < 5) {
+        errorMsg = "Password must be at least 5 characters";
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+        errorMsg = "Password must contain 1 special character";
+      } else {
+        errorMsg = "Strong password ";
+      }
+    }
+
+    // MOBILE NUMBER (10 digits number)
+    if (name === "mobileNo") {
+      if (!value) {
+        errorMsg = "Mobile number is required";
+      } else if (!/^\d+$/.test(value)) {
+        errorMsg = "Only digits allowed";
+      } else if (value.length < 10) {
+        errorMsg = "Mobile number must be 10 digits";
+      } else if (value.length > 10) {
+        errorMsg = "Only 10 digits allowed";
+      } else {
+        errorMsg = "Valid mobile number ";
+      }
+    }
+
+    // ADDRESS
+    if (name === "address") {
+      if (!value.trim()) {
+        errorMsg = "Address is required";
+      } else if (value.length > 50) {
+        errorMsg = "Address must be less than 50 characters";
+      } else if (!/(?=.*[A-Za-z])(?=.*\d)/.test(value)) {
+        errorMsg = "Address must contain letters and numbers";
+      } else {
+        errorMsg = "Valid address";
+      }
+    }
+
+    // ANSWER (ONE WORD ONLY)
+    if (name === "answer") {
+      if (!value.trim()) {
+        errorMsg = "Answer is required";
+      } else if (/\s/.test(value)) {
+        errorMsg = "Answer must be one word only";
+      } else {
+        errorMsg = "Valid answer";
+      }
+    }
+
+    return errorMsg;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    let newErrors = {};
+
+    // USERNAME
+    if (!formData.userName.trim() || formData.userName.trim().length <= 3) {
+      newErrors.userName = "Username must be more than 3 characters";
+    }
+
+    // PASSWORD
+    if (
+      !formData.password ||
+      formData.password.length < 5 ||
+      !/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)
+    ) {
+      newErrors.password =
+        "Password must be 5 characters and contain 1 special character";
+    }
+
+    // MOBILE
+    if (!/^[0-9]{10}$/.test(formData.mobileNo)) {
+      newErrors.mobileNo = "Mobile number must be 10 digits";
+    }
+
+    // ADDRESS
+    if (
+      !formData.address.trim() ||
+      formData.address.length > 50 ||
+      !/(?=.*[A-Za-z])(?=.*\d)/.test(formData.address)
+    ) {
+      newErrors.address =
+        "Address must contain letters, numbers and be under 50 characters";
+    }
+
+    // ANSWER
+    if (!formData.answer.trim() || /\s/.test(formData.answer)) {
+      newErrors.answer = "Answer must be one word only";
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
 
     axios.post('http://localhost:8080/User/save', formData)
       .then(response => {
@@ -56,9 +169,20 @@ function RegisterComponent() {
   }, []);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // update form data
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
+    });
+
+    // live validation
+    const errorMessage = validateField(name, value);
+
+    setErrors({
+      ...errors,
+      [name]: errorMessage
     });
   };
 
@@ -78,6 +202,15 @@ function RegisterComponent() {
                   value={formData.userName}
                   onChange={handleChange}
                 />
+                <small
+                  className={
+                    errors.userName?.includes("✔️")
+                      ? "text-success"
+                      : "text-danger"
+                  }
+                >
+                  {errors.userName}
+                </small>
               </div>
 
               <div className="col-md-6">
@@ -89,6 +222,15 @@ function RegisterComponent() {
                   value={formData.password}
                   onChange={handleChange}
                 />
+                <small
+                  className={
+                    errors.password?.includes("✔️")
+                      ? "text-success"
+                      : "text-danger"
+                  }
+                >
+                  {errors.password}
+                </small>
               </div>
 
               <div className="col-md-6">
@@ -100,6 +242,15 @@ function RegisterComponent() {
                   value={formData.mobileNo}
                   onChange={handleChange}
                 />
+                <small
+                  className={
+                    errors.mobileNo?.includes("✔️")
+                      ? "text-success"
+                      : "text-danger"
+                  }
+                >
+                  {errors.mobileNo}
+                </small>
               </div>
 
               <div className="col-md-6">
@@ -111,6 +262,15 @@ function RegisterComponent() {
                   value={formData.address}
                   onChange={handleChange}
                 />
+                <small
+                  className={
+                    errors.address?.includes("✔️")
+                      ? "text-success"
+                      : "text-danger"
+                  }
+                >
+                  {errors.address}
+                </small>
               </div>
 
               <div className="col-md-6">
@@ -150,26 +310,6 @@ function RegisterComponent() {
                 </select>
               </div>
 
-              {/* <div className="col-md-6">
-                <label className="form-label">Questions</label>
-                <select
-                  name="questionId"
-                  className="form-select"
-                  value={formData.questionId}
-                  onChange={handleChange}
-                >
-                  <option value="">-- Select Question --</option>
-
-                  {questions.map((q) => (
-                    <option key={q.questionId} value={q.questionId}>
-                      {q.questions}
-                    </option>
-                  ))}
-
-                </select>
-              </div> */}
-
-
               <div className="col-md-6">
                 <label className="form-label">Answer</label>
                 <input
@@ -179,6 +319,15 @@ function RegisterComponent() {
                   value={formData.answer}
                   onChange={handleChange}
                 />
+                <small
+                  className={
+                    errors.answer?.includes("✔️")
+                      ? "text-success"
+                      : "text-danger"
+                  }
+                >
+                  {errors.answer}
+                </small>
               </div>
 
               <div className="col-12 text-center mt-3">
