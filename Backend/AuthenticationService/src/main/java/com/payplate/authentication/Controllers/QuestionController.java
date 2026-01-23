@@ -3,6 +3,7 @@ package com.payplate.authentication.Controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,8 @@ import com.payplate.authentication.Services.QuestionService;
 
 @RestController
 @RequestMapping("/Question")
+@CrossOrigin(origins = "http://localhost:3000")
+
 public class QuestionController {
 	
 	@Autowired
@@ -25,7 +28,7 @@ public class QuestionController {
 	}
 	
 	@GetMapping("/{id}")
-	public Question getQuestion(@PathVariable int id)
+	public Question getQuestion(@PathVariable("id") int id)
 	{
 		return questionservice.getQuestion(id);
 		
