@@ -15,37 +15,39 @@ public class Question {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY )
 	@Column(name="questionid")
-	private int questionId;
+	private int questionid;
 	
 	@Column(name="question")
-	private String questions;
+	private String question;
 
 	public int getQuestionId() {
-		return questionId;
+		return questionid;
 	}
 
 	public void setQuestionId(int questionId) {
-		this.questionId = questionId;
+		this.questionid = questionId;
 	}
 
 	public String getQuestions() {
-		return questions;
+		return question;
 	}
 
-	public void setQuestions(String questions) {
-		this.questions = questions;
+	public void setQuestions(String question) {
+		this.question = question;
+	}
+
+	public Question(int questionid, String question) {
+		super();
+		this.questionid = questionid;
+		this.question = question;
+	}
+
+	public Question() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	
-	public Question() {
-		super();
-	}
-
-	public Question(int questionId, String questions) {
-		super();
-		this.questionId = questionId;
-		this.questions = questions;
-	}
 	
 	
 }

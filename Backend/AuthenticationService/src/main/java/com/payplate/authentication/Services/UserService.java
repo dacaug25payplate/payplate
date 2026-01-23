@@ -60,4 +60,19 @@ public class UserService {
 	public void saveUser(User user) {	
 		userRepository.save(user);
 	}
+	
+
+	public User Login(User user) {
+
+		//checking username from frontend with backend password
+	    User dbUser = userRepository.findByUserName(user.getUserName())
+	            .orElseThrow(() -> new RuntimeException("Invalid Username"));
+
+	    //checking frontend password with backend password
+	    if (!dbUser.getPassword().equals(user.getPassword())) {
+	        throw new RuntimeException("Invalid Password");
+	    }
+
+	    return dbUser;
+	}
 }

@@ -5,52 +5,54 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name="user")
 public class User {
-	
+
 	@Id
 	@Column(name="userid")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer userId;
-	
+	private Integer userid;
+
 	@Column(name="username")
-	private String userName;
-	
+	private String username;
+
 	@Column(name="password")
 	private String password;
-	
+
 	@Column(name="mobileno")
-	private String mobileNo;
-	
+	private String mobileno;
+
 	@Column(name="questionid")
-	private int questionId;
-	
+	private int questionid;
+
 	@Column(name="answer")
 	private String answer;
-	
+
 	@Column(name="address")
 	private String address;
-	
-	@Column(name="roleid")
-	private int roleId;
 
-	public int getUserId() {
-		return userId;
+	@Column(name="roleid")
+	private int roleid;
+
+	public Integer getUserId() {
+		return userid;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setUserId(Integer userid) {
+		this.userid = userid;
 	}
 
 	public String getUserName() {
-		return userName;
+		return username;
 	}
 
 	public void setUserName(String userName) {
-		this.userName = userName;
+		this.username = userName;
 	}
 
 	public String getPassword() {
@@ -62,19 +64,19 @@ public class User {
 	}
 
 	public String getMobileNo() {
-		return mobileNo;
+		return mobileno;
 	}
 
 	public void setMobileNo(String mobileNo) {
-		this.mobileNo = mobileNo;
+		this.mobileno = mobileNo;
 	}
 
 	public int getQuestionId() {
-		return questionId;
+		return questionid;
 	}
 
 	public void setQuestionId(int questionId) {
-		this.questionId = questionId;
+		this.questionid = questionId;
 	}
 
 	public String getAnswer() {
@@ -94,31 +96,33 @@ public class User {
 	}
 
 	public int getRoleId() {
-		return roleId;
+		return roleid;
 	}
 
 	public void setRoleId(int roleId) {
-		this.roleId = roleId;
+		this.roleid = roleId;
 	}
 
 	public User(Integer userId, String userName, String password, String mobileNo, int questionId, String answer,
 			String address, int roleId) {
 		super();
-		this.userId = userId;
-		this.userName = userName;
+		this.userid = userId;
+		this.username = userName;
 		this.password = password;
-		this.mobileNo = mobileNo;
-		this.questionId = questionId;
+		this.mobileno = mobileNo;
+		this.questionid = questionId;
 		this.answer = answer;
 		this.address = address;
-		this.roleId = roleId;
+		this.roleid = roleId;
 	}
 
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	
+
+
+
+
 
 }

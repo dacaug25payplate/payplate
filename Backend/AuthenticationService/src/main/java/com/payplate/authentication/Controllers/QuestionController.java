@@ -14,6 +14,10 @@ import com.payplate.authentication.Services.QuestionService;
 @RestController
 @RequestMapping("/Question")
 @CrossOrigin(origins = "http://localhost:3000")
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9e786654b0dcaf9538b676f6c5d3c02c1dabece
 public class QuestionController {
 	
 	@Autowired
@@ -27,7 +31,7 @@ public class QuestionController {
 	}
 	
 	@GetMapping("/{id}")
-	public Question getQuestion(@PathVariable int id)
+	public Question getQuestion(@PathVariable("id") int id)
 	{
 		return questionservice.getQuestion(id);
 		

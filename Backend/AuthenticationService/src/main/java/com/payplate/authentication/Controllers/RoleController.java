@@ -15,6 +15,10 @@ import com.payplate.authentication.Services.RoleService;
 @RestController
 @RequestMapping("/Role")
 @CrossOrigin(origins = "http://localhost:3000")
+<<<<<<< HEAD
+=======
+
+>>>>>>> d9e786654b0dcaf9538b676f6c5d3c02c1dabece
 public class RoleController {
 	
 	@Autowired
@@ -27,7 +31,7 @@ public class RoleController {
 	}
 	
 	@GetMapping("/{id}")
-	public Role getRole(@PathVariable int id)
+	public Role getRole(@PathVariable("id") int id)
 	{
 		return roleservice.getRole(id);
 	}
