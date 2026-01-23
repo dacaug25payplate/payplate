@@ -63,10 +63,14 @@ function RegisterComponent() {
   };
 
   return (
-    <div className="container-md mt-5">
-      <form onSubmit={handleSubmit}>
-        <div className="row justify-content-center">
-          <div className="col-md-6">
+  <div className="container">
+    <div className="row justify-content-center align-items-center min-vh-100">
+      <div className="col-md-8 col-lg-7">
+        <div className="card shadow p-5">
+
+          <h3 className="text-center mb-4">Register</h3>
+
+          <form onSubmit={handleSubmit}>
             <div className="row g-3">
 
               <div className="col-md-6">
@@ -122,7 +126,6 @@ function RegisterComponent() {
                   onChange={handleChange}
                 >
                   <option value="">-- Select Role --</option>
-
                   {roles.map((r) => (
                     <option key={r.roleId} value={r.roleId}>
                       {r.roleName}
@@ -140,37 +143,15 @@ function RegisterComponent() {
                   onChange={handleChange}
                 >
                   <option value="">-- Select Question --</option>
-
                   {questions.map((q) => (
                     <option key={q.questionId} value={q.questionId}>
                       {q.questions}
                     </option>
                   ))}
-
                 </select>
               </div>
 
-              {/* <div className="col-md-6">
-                <label className="form-label">Questions</label>
-                <select
-                  name="questionId"
-                  className="form-select"
-                  value={formData.questionId}
-                  onChange={handleChange}
-                >
-                  <option value="">-- Select Question --</option>
-
-                  {questions.map((q) => (
-                    <option key={q.questionId} value={q.questionId}>
-                      {q.questions}
-                    </option>
-                  ))}
-
-                </select>
-              </div> */}
-
-
-              <div className="col-md-6">
+              <div className="col-md-12">
                 <label className="form-label">Answer</label>
                 <input
                   type="text"
@@ -181,18 +162,21 @@ function RegisterComponent() {
                 />
               </div>
 
-              <div className="col-12 text-center mt-3">
-                <button type="submit" className="btn btn-success">
+              <div className="col-12 mt-3">
+                <button type="submit" className="btn btn-success w-100">
                   Register
                 </button>
               </div>
 
             </div>
-          </div>
+          </form>
+
         </div>
-      </form>
+      </div>
     </div>
-  );
+  </div>
+);
+
 }
 
 export default RegisterComponent;

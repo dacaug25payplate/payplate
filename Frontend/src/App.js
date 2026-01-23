@@ -1,9 +1,9 @@
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RegisterComponent from './components/RegisterComponent';
 import LoginComponent from './components/LoginComponent';
 import ForgetPasswordComponent from './components/ForgetPasswordComponent';
+
 
 function App() {
   return (
