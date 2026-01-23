@@ -18,7 +18,6 @@ function RegisterComponent() {
         axios.post('http://localhost:8080/User/save', formData)
             .then(response => {
                 alert('Registration Successful');
-                console.log(response.data);
             })
             .catch(error => {
                 console.error(error);
@@ -32,6 +31,8 @@ function RegisterComponent() {
         axios.get('http://localhost:8080/Question/getAllQuestion')
             .then(response => {
                 setQuestions(response.data);
+                console.log(response.data);
+
             })
             .catch(error => {
                 console.error('Error fetching questions', error);
