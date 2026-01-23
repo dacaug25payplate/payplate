@@ -15,16 +15,16 @@ public class Question {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY )
 	@Column(name="questionid")
-	private int questionId;
+	private Integer questionId;
 	
 	@Column(name="question")
 	private String questions;
 
-	public int getQuestionId() {
+	public Integer getQuestionId() {
 		return questionId;
 	}
 
-	public void setQuestionId(int questionId) {
+	public void setQuestionId(Integer questionId) {
 		this.questionId = questionId;
 	}
 
@@ -41,7 +41,7 @@ public class Question {
 		super();
 	}
 
-	public Question(int questionId, String questions) {
+	public Question(Integer questionId, String questions) {
 		super();
 		this.questionId = questionId;
 		this.questions = questions;
