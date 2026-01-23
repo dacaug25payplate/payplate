@@ -14,37 +14,40 @@ public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "roleid")
-	private Integer roleId;
+	private int roleid;
 	
 	@Column(name ="rolename")
-	private String roleName;
+	private String rolename;
 
-	public Integer getRoleId() {
-		return roleId;
+	public int getRoleId() {
+		return roleid;
 	}
 
-	public void setRoleId(Integer roleId) {
-		this.roleId = roleId;
+	public void setRoleId(int roleid) {
+		this.roleid = roleid;
 	}
 
 	public String getRoleName() {
-		return roleName;
+		return rolename;
 	}
 
 	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
-
-	public Role(Integer roleId, String roleName) {
-		super();
-		this.roleId = roleId;
-		this.roleName = roleName;
+		this.rolename = roleName;
 	}
 
 	public Role() {
 		super();
+		// TODO Auto-generated constructor stub
 	}
+
+	public Role(int roleId, String roleName) {
+		super();
+		this.roleid = roleId;
+		this.rolename = roleName;
+	}
+
 	
+
 	
 	
 }
