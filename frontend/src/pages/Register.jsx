@@ -85,10 +85,6 @@ function Register() {
                 <button className="btn btn-success w-100">Register</button>
               </div>
             </form>
-
-            <div className="text-center mt-3">
-              <Link to="/">Back to Login</Link>
-            </div>
           </div>
         </div>
       </div>
