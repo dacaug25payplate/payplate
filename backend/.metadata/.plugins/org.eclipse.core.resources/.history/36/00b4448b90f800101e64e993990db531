@@ -1,0 +1,53 @@
+package com.payplate.authentication.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.payplate.authentication.Entity.User;
+import com.payplate.authentication.service.UserService;
+
+@RestController
+@RequestMapping("/api")
+@CrossOrigin("*")
+public class UserController {
+
+    @Autowired
+    private UserService service;
+
+    @PostMapping("/register")
+    public User register(@RequestBody User user) {
+        return service.register(user);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User user) {
+        User u = service.login(user.getUsername(), user.getPassword());
+        if (u == null) return ResponseEntity.status(401).body("Invalid");
+        return ResponseEntity.ok(u);
+    }
+
+    @GetMapping("/forgot/{username}")
+    public ResponseEntity<?> forgot(@PathVariable String username) {
+        String q = service.getQuestion(username);
+        if (q == null) return ResponseEntity.status(404).body("Not found");
+        return ResponseEntity.ok(q);
+    }
+
+    @PostMapping("/verify")
+    public boolean verify(@RequestBody User user) {
+        return service.verifyAnswer(user.getUsername(), user.getAnswer());
+    }
+
+    @PostMapping("/update")
+    public boolean update(@RequestBody User user) {
+        return service.updatePassword(user.getUsername(), user.getPassword());
+    }
+}
+
