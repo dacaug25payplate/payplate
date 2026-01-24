@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-content_assist_proposals_background=52,57,61
-content_assist_proposals_foreground=238,238,238
-eclipse.preferences.version=1
-org.eclipse.jdt.ui.formatterprofiles.version=23
-=======
+=\=\=\=\=\=\=
+<<<<<<<=HEAD
+>>>>>>>=origin/dev_sujit
 content_assist_completion_replacement_background=200,200,0
 content_assist_completion_replacement_background,defaultValueBeforeOverriddenFromCSS=255,255,0
 content_assist_completion_replacement_foreground=200,0,0
@@ -160,7 +157,6 @@ semanticHighlighting.typeParameter.color,defaultValueBeforeOverriddenFromCSS=100
 semanticHighlighting.typeParameter.enabled=true
 semanticHighlighting.typeParameter.enabled,defaultValueBeforeOverriddenFromCSS=false
 sourceHoverBackgroundColor=68,68,68
->>>>>>> origin/dev_sujit
 spelling_locale_initialized=true
 typefilter_migrated_2=true
 useAnnotationsPrefPage=true

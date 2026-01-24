@@ -11,10 +11,6 @@
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.payplate.authentication.AuthenticationApplication"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Authentication"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.springframework.ide.eclipse.boot.launch.BootMavenSourcePathProvider"/>
-<<<<<<< HEAD
-=======
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Djava.security.egd=file:/dev/./urandom "/>
->>>>>>> origin/dev_sujit
     <stringAttribute key="process_factory_id" value="org.springframework.ide.eclipse.boot.launch.process.BootProcessFactory"/>
     <booleanAttribute key="spring.boot.auto-connect" value="true"/>
     <booleanAttribute key="spring.boot.jmx.enable" value="true"/>

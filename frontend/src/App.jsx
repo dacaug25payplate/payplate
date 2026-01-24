@@ -1,10 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import React from "react";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgetPassword from "./pages/ForgetPassword";
-
-import ProtectedRoute from "./pages/ProtectedRoute";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserDashboard from "./pages/user/UserDashboard";
@@ -12,22 +10,40 @@ import WaiterDashboard from "./pages/waiter/WaiterDashboard";
 import CookDashboard from "./pages/cook/CookDashboard";
 import Navbar from "./pages/Navbar";
 
+const AuthLayoutWithNavbar = () => (
+  <>
+    <Navbar />
+    <Outlet />
+  </>
+);
+
+const DashboardLayout = () => <Outlet />;
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AuthLayoutWithNavbar />,
+    children: [
+      { index: true, element: <Login /> },
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
+      { path: "/forgetpassword", element: <ForgetPassword /> },
+    ],
+  },
+  {
+    path: "/",
+    element: <DashboardLayout />,
+    children: [
+      { path: "/admin", element: <AdminDashboard /> },
+      { path: "/user", element: <UserDashboard /> },
+      { path: "/cook", element: <CookDashboard /> },
+      { path: "/waiter", element: <WaiterDashboard /> },
+    ],
+  },
+]);
+
 function App() {
-  return (
-    <BrowserRouter>
-    <Navbar/> {/*Navbar*/} 
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgetpassword" element={<ForgetPassword />} />
-        <Route path="/admin" element={< AdminDashboard />} />
-        <Route path="/user" element={< UserDashboard />} />
-        <Route path="/waiter" element={< WaiterDashboard />} />
-        <Route path="/cook" element={< CookDashboard/>} />
-        
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

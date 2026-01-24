@@ -14,7 +14,7 @@ import com.payplate.authentication.service.UserService;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 

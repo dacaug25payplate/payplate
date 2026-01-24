@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function ForgetPassword() {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
 
   const [step, setStep] = useState(1);
@@ -15,23 +15,35 @@ function ForgetPassword() {
   const [answer, setAnswer] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errors, setErrors] = useState({});
+
   const checkUsername = async () => {
+    setErrors({});
+    if (username == "") {
+      setErrors({ username: "Username is required" });
+      return;
+    }
     try {
-      const res = await axios.get(`http://localhost:8080/api/forgot/${username}`);
-      setQuestion(res.data);
-      setStep(2);
-    } catch {
+      const res = await axios.get(`http://localhost:8080/api/user/forgot/${username}`);
+      if (res.data) {
+        setQuestion(res.data); // security question from API
+        setStep(2);
+      } else {
+        setErrors({ username: "User not found" });
+      }
+    } catch (error) {
+      // setErrors({ username: "User not found" });
       alert("User not found");
     }
   };
 
   const verify = async () => {
-    const res = await axios.post("http://localhost:8080/api/verify", { username, answer });
+    const res = await axios.post("http://localhost:8080/api/user/verify", { username, answer });
     res.data ? setStep(3) : alert("Wrong answer");
   };
 
   const update = async () => {
-    await axios.post("http://localhost:8080/api/update", { username, password });
+    await axios.post("http://localhost:8080/api/user/update", { username, password });
     alert("Password updated");
     setStep(1);
     navigate("/");
@@ -45,20 +57,77 @@ function ForgetPassword() {
             <h4 className="text-center">Forgot Password</h4>
 
             {step === 1 && (
-              <>
-                <input className="form-control mb-3" placeholder="Username"
-                  onChange={e => setUsername(e.target.value)} />
-                <button className="btn btn-primary w-100" onClick={checkUsername}>Next</button>
-              </>
+              <div>
+                <label htmlFor="username" className="form-label">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  type="text"
+                  className={`form-control mb-2 ${errors.username ? "is-invalid" : ""}`}
+                  placeholder="Enter your username"
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                    setErrors({}); // clear error on typing
+                  }}
+                />
+                {errors.username && (
+                  <div className="invalid-feedback d-block">
+                    {errors.username}
+                  </div>
+                )}
+
+                <button
+                  className="btn btn-primary w-100 mt-3"
+                  onClick={checkUsername}
+                >
+                  Next
+                </button>
+              </div>
             )}
 
             {step === 2 && (
-              <>
+              <div>
                 <p><b>{question}</b></p>
-                <input className="form-control mb-3" placeholder="Answer"
-                  onChange={e => setAnswer(e.target.value)} />
-                <button className="btn btn-primary w-100" onClick={verify}>Verify</button>
-              </>
+
+                <label htmlFor="answer" className="form-label">Answer</label>
+                <input
+                  id="answer"
+                  type="text"
+                  className={`form-control mb-2 ${errors.answer ? "is-invalid" : ""}`}
+                  placeholder="Enter your answer"
+                  value={answer}
+                  onChange={(e) => {
+                    setAnswer(e.target.value);
+                    setErrors({ ...errors, answer: null }); // clear answer error on typing
+                  }}
+                />
+                {errors.answer && (
+                  <div className="invalid-feedback d-block">
+                    {errors.answer}
+                  </div>
+                )}
+
+                <button
+                  className="btn btn-primary w-100 mt-2"
+                  onClick={() => {
+                    // Reset previous errors
+                    setErrors({ ...errors, answer: null });
+
+                    // Validation: answer required
+                    if (!answer.trim()) {
+                      setErrors({ ...errors, answer: "Answer is required" });
+                      return;
+                    }
+
+                    // Call verify function if valid
+                    verify();
+                  }}
+                >
+                  Verify
+                </button>
+              </div>
             )}
 
             {step === 3 && (
