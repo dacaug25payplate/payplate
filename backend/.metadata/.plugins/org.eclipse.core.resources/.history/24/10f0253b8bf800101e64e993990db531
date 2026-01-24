@@ -1,0 +1,12 @@
+package com.payplate.authentication.Entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
+public class Role {
+    @Id
+    private Integer roleid;
+    private String rolename;
+}
+
