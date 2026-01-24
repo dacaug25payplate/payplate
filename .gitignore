@@ -1,0 +1,10 @@
+.DS_Store
+# Eclipse / STS
+.metadata/
+.recommenders/
+*.log
+
+# Build
+target/
+node_modules/
+dist
