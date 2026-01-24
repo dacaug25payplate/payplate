@@ -20,30 +20,11 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
-
-        <Route path="/admin" element={
-          <ProtectedRoute role="Admin">
-            <AdminDashboard />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/user" element={
-          <ProtectedRoute role="User">
-            <UserDashboard />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/waiter" element={
-          <ProtectedRoute role="Waiter">
-            <WaiterDashboard />
-          </ProtectedRoute>
-        } />
-
-        <Route path="/cook" element={
-          <ProtectedRoute role="Cook">
-            <CookDashboard />
-          </ProtectedRoute>
-        } />
+        <Route path="/admin" element={< AdminDashboard />} />
+        <Route path="/user" element={< UserDashboard />} />
+        <Route path="/waiter" element={< WaiterDashboard />} />
+        <Route path="/cook" element={< CookDashboard/>} />
+        
       </Routes>
     </BrowserRouter>
   );

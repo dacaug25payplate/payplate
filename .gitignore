@@ -1,4 +1,5 @@
 .DS_Store
+<<<<<<< HEAD
 # Eclipse / STS
 .metadata/
 .recommenders/
@@ -8,3 +9,5 @@
 target/
 node_modules/
 dist
+=======
+>>>>>>> origin/dev_sujit

@@ -69,9 +69,6 @@ function ForgetPassword() {
               </>
             )}
 
-            <div className="text-center mt-3">
-              <Link to="/">Back to login</Link>
-            </div>
           </div>
         </div>
       </div>

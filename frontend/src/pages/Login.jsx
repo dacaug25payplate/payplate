@@ -13,9 +13,27 @@ function Login() {
     e.preventDefault();
     try {
       const res = await axios.post("http://localhost:8080/api/login", data);
+      //do this, but before check res is ok
       dispatch(setUser(res.data));
       console.log(res.data);
-      navigate("/dashboard");
+      if(res.data.role.roleid==1){
+        navigate("/admin");
+      }
+      else if(res.data.role.roleid==2){
+        //to user
+        navigate("/user");
+      }
+      else if(res.data.role.roleid==3){
+        //to waiter
+        navigate("/waiter");
+      }
+      else if(res.data.role.roleid==4){
+        //to cook
+        navigate("/cook");
+      }
+
+      
+      
     } catch {
       alert("Invalid username or password");
     }
@@ -50,7 +68,6 @@ function Login() {
 
             <div className="text-center mt-3">
               <Link to="/forgetpassword">Forgot Password?</Link><br />
-              <Link to="/register">Register here</Link>
             </div>
           </div>
         </div>

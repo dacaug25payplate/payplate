@@ -1,0 +1,5 @@
+package com.payplate.authentication.repository;
+
+public interface QuestionRepository {
+
+}

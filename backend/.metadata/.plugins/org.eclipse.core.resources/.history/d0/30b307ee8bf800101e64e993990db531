@@ -1,0 +1,5 @@
+package com.payplate.authentication.service;
+
+public class UserService {
+
+}
