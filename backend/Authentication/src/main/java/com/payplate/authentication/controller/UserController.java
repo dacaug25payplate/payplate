@@ -2,6 +2,7 @@ package com.payplate.authentication.controller;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ public class UserController {
 
     @Autowired
     private QuestionRepository questionRepo;
+    
+    
 
     // REGISTER
     @PostMapping("/register")
@@ -63,6 +66,14 @@ public class UserController {
     @GetMapping("/questions")
     public List<Question> getQuestions() {
         return questionRepo.findAll();
+    }
+    
+    // Check for user valid or not for login
+    @GetMapping("/Users/{username}")
+    public boolean isUserExists(@PathVariable String username)
+    {
+    	Optional<User> user = service.isUserNameExists(username);
+    	return user.isPresent();
     }
 }
 
