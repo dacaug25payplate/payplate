@@ -13,7 +13,6 @@ public class UserService {
 
     @Autowired
     private UserRepository repo;
-
     
     public User register(User user) {
         return repo.save(user);
@@ -33,7 +32,6 @@ public class UserService {
         return user;
     }
 
-
     public String getQuestion(String username) {
         User user = repo.findByUsername(username).orElse(null);
         if (user == null) return null;
@@ -52,5 +50,6 @@ public class UserService {
         repo.save(user);
         return true;
     }
+
 }
 
