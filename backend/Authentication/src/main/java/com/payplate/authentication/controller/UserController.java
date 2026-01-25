@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.payplate.authentication.Entity.Question;
+import com.payplate.authentication.Entity.Role;
 import com.payplate.authentication.Entity.User;
 import com.payplate.authentication.repository.QuestionRepository;
+import com.payplate.authentication.repository.RoleRepository;
 import com.payplate.authentication.service.UserService;
 
 
@@ -23,6 +25,9 @@ public class UserController {
 
     @Autowired
     private QuestionRepository questionRepo;
+    
+    @Autowired
+    private RoleRepository roleRepo;
 
     // REGISTER
     @PostMapping("/register")
@@ -75,6 +80,12 @@ public class UserController {
     @GetMapping("/questions")
     public List<Question> getQuestions() {
         return questionRepo.findAll();
+    }
+    
+    //LOAD ROLES FOR  STAFF REGISTER
+    @GetMapping("/staff")
+    public List<Role> getStaff(){
+    	return roleRepo.findByRoleidIn(List.of(3,4));
     }
 }
 

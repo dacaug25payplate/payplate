@@ -15,7 +15,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/api/login", data);
+      const res = await axios.post("http://localhost:8080/api/user/login", data);
       //do this, but before check res is ok
       dispatch(setUser(res.data));
 
