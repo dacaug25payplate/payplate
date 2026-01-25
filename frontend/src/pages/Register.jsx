@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+<<<<<<< HEAD
 import { useNavigate, Link } from "react-router-dom";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
 
 function AddMenu() {
 
+<<<<<<< HEAD
+=======
+function Register() {
+
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -65,6 +74,7 @@ function AddMenu() {
 
   // 🔹 Load categories & subcategories
   useEffect(() => {
+<<<<<<< HEAD
     axios.get("http://localhost:8080/api/getAllCategory")
       .then(res => setCategories(res.data));
       console.log(response.data);
@@ -72,6 +82,10 @@ function AddMenu() {
     axios.get("http://localhost:8080/api/getAllSubCategory")
       .then(res => setSubcategories(res.data));
       console.log(response.data);
+=======
+    axios.get("http://localhost:8080/api/user/questions")
+      .then(res => setQuestions(res.data));
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
   }, []);
 
   const filteredSubCategories = subcategories.filter(
@@ -102,11 +116,17 @@ function AddMenu() {
     formData.append("image", form.image);
 
     try {
+<<<<<<< HEAD
       await axios.post("http://localhost:8080/api/menu", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
       alert("Menu added successfully");
       navigate("/dashboard"); // change if needed
+=======
+      await axios.post("http://localhost:8080/api/user/register", form);
+      alert("Registered successfully");
+      navigate("/");
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
     } catch {
       alert("Failed to add menu");
     }
@@ -124,6 +144,7 @@ function AddMenu() {
 
               {/* Menu Name */}
               <div className="col-md-6">
+<<<<<<< HEAD
                 <input
                   className="form-control"
                   name="menuname"
@@ -132,10 +153,16 @@ function AddMenu() {
                   onChange={handleChange}
                 />
                 <small className="text-danger">{errors.menuname}</small>
+=======
+                <input className="form-control" placeholder="Username"
+                value={form.username}
+                  onChange={e => setForm({ ...form, username: e.target.value })} />
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
               </div>
 
               {/* Price */}
               <div className="col-md-6">
+<<<<<<< HEAD
                 <input
                   type="number"
                   className="form-control"
@@ -156,10 +183,22 @@ function AddMenu() {
                   value={form.description}
                   onChange={handleChange}
                 />
+=======
+                <input className="form-control" placeholder="Password"
+                value={form.password}
+                  onChange={e => setForm({ ...form, password: e.target.value })} />
+              </div>
+
+              <div className="col-md-6">
+                <input className="form-control" placeholder="Mobile"
+                value={form.mobileno}
+                  onChange={e => setForm({ ...form, mobileno: e.target.value })} />
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
               </div>
 
               {/* Category */}
               <div className="col-md-6">
+<<<<<<< HEAD
                 <select
                   className="form-select"
                   name="categoryid"
@@ -170,6 +209,21 @@ function AddMenu() {
                   {categories.map(cat => (
                     <option key={cat.categoryid} value={cat.categoryid}>
                       {cat.categoryname}
+=======
+                <input className="form-control" placeholder="Address"
+                value={form.address}
+                  onChange={e => setForm({ ...form, address: e.target.value })} />
+              </div>
+
+              <div className="col-md-6">
+                <select className="form-select"
+                value={form.question.questionid}
+                  onChange={e => setForm({ ...form, question: { questionid: e.target.value } })}>
+                  <option>Select Question</option>
+                  {questions.map(q => (
+                    <option key={q.questionid} value={q.questionid}>
+                      {q.question}
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
                     </option>
                   ))}
                 </select>
@@ -178,6 +232,7 @@ function AddMenu() {
 
               {/* SubCategory */}
               <div className="col-md-6">
+<<<<<<< HEAD
                 <select
                   className="form-select"
                   name="subcategoryid"
@@ -204,6 +259,11 @@ function AddMenu() {
                   onChange={handleChange}
                 />
                 <small className="text-danger">{errors.image}</small>
+=======
+                <input className="form-control" placeholder="Answer"
+                value={form.answer}
+                  onChange={e => setForm({ ...form, answer: e.target.value })} />
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
               </div>
 
               <div className="col-12">
@@ -213,11 +273,14 @@ function AddMenu() {
               </div>
 
             </form>
+<<<<<<< HEAD
 
             <div className="text-center mt-3">
               <Link to="/dashboard">Back</Link>
             </div>
 
+=======
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
           </div>
         </div>
       </div>

@@ -9,13 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.payplate.authentication.Entity.Question;
+import com.payplate.authentication.Entity.Role;
 import com.payplate.authentication.Entity.User;
 import com.payplate.authentication.repository.QuestionRepository;
+import com.payplate.authentication.repository.RoleRepository;
 import com.payplate.authentication.service.UserService;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
@@ -25,7 +27,12 @@ public class UserController {
     @Autowired
     private QuestionRepository questionRepo;
     
+<<<<<<< HEAD
     
+=======
+    @Autowired
+    private RoleRepository roleRepo;
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
 
     // REGISTER
     @PostMapping("/register")
@@ -36,11 +43,23 @@ public class UserController {
     // LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
-        User logged = service.login(user.getUsername(), user.getPassword());
-        if (logged == null)
-            return ResponseEntity.status(401).body("Invalid credentials");
-        return ResponseEntity.ok(logged);
+        try {
+            User logged = service.login(user.getUsername(), user.getPassword());
+            return ResponseEntity.ok(logged);
+        } catch (RuntimeException e) {
+
+            if (e.getMessage().equals("USER_NOT_FOUND")) {
+                return ResponseEntity.status(404).body("User not found");
+            }
+
+            if (e.getMessage().equals("WRONG_PASSWORD")) {
+                return ResponseEntity.status(401).body("Wrong password");
+            }
+
+            return ResponseEntity.status(500).body("Something went wrong");
+        }
     }
+
 
     // GET QUESTION
     @GetMapping("/forgot/{username}")
@@ -68,12 +87,19 @@ public class UserController {
         return questionRepo.findAll();
     }
     
+<<<<<<< HEAD
     // Check for user valid or not for login
     @GetMapping("/Users/{username}")
     public boolean isUserExists(@PathVariable String username)
     {
     	Optional<User> user = service.isUserNameExists(username);
     	return user.isPresent();
+=======
+    //LOAD ROLES FOR  STAFF REGISTER
+    @GetMapping("/staff")
+    public List<Role> getStaff(){
+    	return roleRepo.findByRoleidIn(List.of(3,4));
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
     }
 }
 

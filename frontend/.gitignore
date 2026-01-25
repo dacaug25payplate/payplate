@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # # Logs
 # logs
 # *.log
@@ -22,6 +23,9 @@
 # *.njsproj
 # *.sln
 # *.sw?
+=======
+# Logs
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
 .metadata/
 logs
 *.log
@@ -49,4 +53,8 @@ dist-ssr
 *.sw?
 .metadata/
 *.log
+<<<<<<< HEAD
 .recommenders/
+=======
+.recommenders/
+>>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
