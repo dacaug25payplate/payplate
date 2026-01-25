@@ -14,6 +14,7 @@ import StaffRegister from "./pages/admin/staffRegister";
 import Viewmenu from "./pages/admin/viewMenu";
 import AddDiscount from "./pages/admin/addDiscount";
 import Viewfeedback from "./pages/admin/viewfeedback";
+import AddMenu from "./pages/AddMenu";
 
 const AuthLayoutWithNavbar = () => (
   <>
@@ -46,11 +47,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminDashboard />, // ✅ layout ONLY
+    element: <AdminDashboard />, 
     children: [
       // { index: true, element: <Dashboard /> },
       { path: "/admin/createStaff", element: <StaffRegister/> },
-      // { path: "/admin/addmenu", element: <AddMenu /> },
+      { path: "/admin/addmenu", element: <AddMenu /> },
       { path: "/admin/viewmenu", element: <Viewmenu/> },
     //   { path: "viewmenu/veg", element: <Viewmenu type="VEG" /> },
     // { path: "viewmenu/nonveg", element: <Viewmenu type="NON_VEG" /> }
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminDashboard />, // ✅ layout ONLY
+    element: <AdminDashboard />, 
     children: [
       // { index: true, element: <Dashboard /> },
       { path: "/admin/order", element: <Order /> },
