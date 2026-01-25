@@ -9,6 +9,7 @@ import UserDashboard from "./pages/user/UserDashboard";
 import WaiterDashboard from "./pages/waiter/WaiterDashboard";
 import CookDashboard from "./pages/cook/CookDashboard";
 import Navbar from "./pages/Navbar";
+<<<<<<< HEAD
 import Order from "./pages/admin/order";
 import StaffRegister from "./pages/admin/staffRegister";
 import Viewmenu from "./pages/admin/viewMenu";
@@ -72,6 +73,46 @@ const router = createBrowserRouter([
 
 function App() {
   return <RouterProvider router={router} />;
+=======
+import AddMenu from "./pages/addMenu";
+
+function App() {
+  return (
+    <BrowserRouter>
+    <Navbar/> {/*Navbar*/} 
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgetpassword" element={<ForgetPassword />} />
+        <Route path="/addMenu" element={<AddMenu />} />
+
+        <Route path="/admin" element={
+          <ProtectedRoute role="Admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/user" element={
+          <ProtectedRoute role="User">
+            <UserDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/waiter" element={
+          <ProtectedRoute role="Waiter">
+            <WaiterDashboard />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/cook" element={
+          <ProtectedRoute role="Cook">
+            <CookDashboard />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </BrowserRouter>
+  );
+>>>>>>> 0d8dcb55bd90cd8e673e695e3287dac8eb66b53a
 }
 
 export default App;
