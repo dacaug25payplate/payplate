@@ -1,105 +1,131 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-function AddMenu(){
-    const [form, setForm] = useState({
-        username: "",
-        password: "",
-        mobileno: "",
-        address: "",
-        answer: "",
-        role: { roleid: 2 },
-        question: { questionid: "" }
-      });
-    
-      const [questions, setQuestions] = useState([]);
-      //const [role,setRole] = useState([]);// Role
-    
-      useEffect(() => {
-        axios.get("http://localhost:8080/api/questions")
-          .then(res => setQuestions(res.data));
-      }, []);
-    
-      const submit = async (e) => {
-        e.preventDefault();
-        try {
-          await axios.post("http://localhost:8080/api/register", form);
-          alert("Registered successfully");
-          navigate("/");
-        } catch {
-          alert("Registration failed");
-        }
-      };
-    
-      return (
-        // <div className="container">
-          <div className="row justify-content-center align-items-center min-vh-100">
-            <div className="col-md-3"></div>
-            <div className="col-md-6">
-              <div className="card shadow p-4">
-                <h3 className="text-center mb-3">Staff Register</h3>
-    
-                <form onSubmit={submit} className="row g-3">
-                    <div className="col-md-12">
-                    <select className="form-select"
-                      onChange={e => setForm({ ...form, question: { questionid: e.target.value } })}>
-                      <option>Select Role</option>
-                      {questions.map(q => (
-                        <option key={q.questionid} value={q.questionid}>
-                          {q.question}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+function AddMenu() {
 
-                  <div className="col-md-12">
-                    <input className="form-control" placeholder="Username"
-                      onChange={e => setForm({ ...form, username: e.target.value })} />
-                  </div>
-    
-                  <div className="col-md-12">
-                    <input className="form-control" placeholder="Password"
-                      onChange={e => setForm({ ...form, password: e.target.value })} />
-                  </div>
-    
-                  <div className="col-md-12">
-                    <input className="form-control" placeholder="Mobile"
-                      onChange={e => setForm({ ...form, mobileno: e.target.value })} />
-                  </div>
-    
-                  <div className="col-md-12">
-                    <input className="form-control" placeholder="Address"
-                      onChange={e => setForm({ ...form, address: e.target.value })} />
-                  </div>
-    
-                  <div className="col-md-12">
-                    <select className="form-select"
-                      onChange={e => setForm({ ...form, question: { questionid: e.target.value } })}>
-                      <option>Select Question</option>
-                      {questions.map(q => (
-                        <option key={q.questionid} value={q.questionid}>
-                          {q.question}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-    
-                  <div className="col-md-12">
-                    <input className="form-control" placeholder="Answer"
-                      onChange={e => setForm({ ...form, answer: e.target.value })} />
-                  </div>
-    
-                  <div className="col-12">
-                    <button className="btn btn-success w-100">Register</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div className="col-md-3"></div>
+  const [menuname, setMenuname] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
 
-          </div>
-        //</div>
-      );
+  const [categoryid, setCategoryid] = useState("");
+  const [subcategoryid, setSubcategoryid] = useState("");
+
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+
+  const [image, setImage] = useState(null);
+
+  // Load categories
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/getAllCategory")
+      .then((res) => {
+        console.log("Categories:", res.data);
+        setCategories(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  // Load subcategories (NO FILTERING YET)
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/getAllSubCategory")
+      .then((res) => {
+        console.log("SubCategories:", res.data);
+        setSubcategories(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("menuname", menuname);
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("categoryid", categoryid);
+    formData.append("subcategoryid", subcategoryid);
+    formData.append("image", image);
+
+    try {
+      await axios.post("http://localhost:8080/api/menu", formData);
+      console.log(formData);
+      alert("Menu added successfully");
+    } catch (err) {
+      alert("Failed to add menu");
+    }
+  };
+
+  return (
+    <div style={{ width: "400px", margin: "auto" }}>
+      <h3>Add Menu</h3>
+
+      <form onSubmit={handleSubmit}>
+
+        <input
+          placeholder="Menu Name"
+          value={menuname}
+          onChange={(e) => setMenuname(e.target.value)}
+        />
+
+        <br /><br />
+
+        <input
+          placeholder="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+
+        <br /><br />
+
+        <textarea
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+
+        <br /><br />
+
+        {/* CATEGORY */}
+        <select
+          value={categoryid}
+          onChange={(e) => setCategoryid(e.target.value)}
+        >
+          <option value="">Select Category</option>
+          {categories.map((cat) => (
+            <option key={cat.categoryid} value={cat.categoryid}>
+              {cat.categoryname}
+            </option>
+          ))}
+        </select>
+
+        <br /><br />
+
+        {/* SUBCATEGORY (NO FILTER) */}
+        <select
+          value={subcategoryid}
+          onChange={(e) => setSubcategoryid(e.target.value)}
+        >
+          <option value="">Select SubCategory</option>
+          {subcategories.map((sub) => (
+            <option key={sub.subcategoryid} value={sub.subcategoryid}>
+              {sub.subcategoryname}
+            </option>
+          ))}
+        </select>
+
+        <br /><br />
+
+        <input
+          type="file"
+          onChange={(e) => setImage(e.target.files[0])}
+        />
+
+        <br /><br />
+
+        <button type="submit">Save Menu</button>
+      </form>
+    </div>
+  );
 }
 
 export default AddMenu;
