@@ -9,6 +9,12 @@ import UserDashboard from "./pages/user/UserDashboard";
 import WaiterDashboard from "./pages/waiter/WaiterDashboard";
 import CookDashboard from "./pages/cook/CookDashboard";
 import Navbar from "./pages/Navbar";
+import Order from "./pages/admin/order";
+import StaffRegister from "./pages/admin/staffRegister";
+import AddMenu from "./pages/admin/AddMenu";
+import Viewmenu from "./pages/admin/viewMenu";
+import AddDiscount from "./pages/admin/addDiscount";
+import Viewfeedback from "./pages/admin/viewfeedback";
 
 const AuthLayoutWithNavbar = () => (
   <>
@@ -34,12 +40,33 @@ const router = createBrowserRouter([
     path: "/",
     element: <DashboardLayout />,
     children: [
-      { path: "/admin", element: <AdminDashboard /> },
-      { path: "/user", element: <UserDashboard /> },
-      { path: "/cook", element: <CookDashboard /> },
-      { path: "/waiter", element: <WaiterDashboard /> },
-    ],
+      { path: "user", element: <UserDashboard /> },
+      { path: "cook", element: <CookDashboard /> },
+      { path: "waiter", element: <WaiterDashboard /> }
+    ]
   },
+  {
+    path: "/admin",
+    element: <AdminDashboard />, // ✅ layout ONLY
+    children: [
+      // { index: true, element: <Dashboard /> },
+      { path: "/admin/createStaff", element: <StaffRegister/> },
+      { path: "/admin/addmenu", element: <AddMenu /> },
+      { path: "/admin/viewmenu", element: <Viewmenu/> },
+      { path: "/admin/adddiscount", element: <AddDiscount /> },
+      { path: "/admin/viewfeedbacks", element: <Viewfeedback /> },
+    ]
+  },
+  {
+    path: "/admin",
+    element: <AdminDashboard />, // ✅ layout ONLY
+    children: [
+      // { index: true, element: <Dashboard /> },
+      { path: "/admin/order", element: <Order /> },
+      // { path: "billing", element: <Billing /> },
+      // { path: "menu", element: <Menu /> }
+    ]
+  }
 ]);
 
 function App() {
