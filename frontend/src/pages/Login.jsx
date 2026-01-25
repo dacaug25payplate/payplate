@@ -5,91 +5,46 @@ import { setUser } from "../store/userSlice";
 import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
+  const [data, setData] = useState({ username: "", password: "" });
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // FORM DATA
-  const [data, setData] = useState({
-    username: "",
-    password: ""
-  });
-
-  // VALIDATION STATES
-  const [errors, setErrors] = useState({});
-  const [userExists, setUserExists] = useState(false);
-  const [checkingUser, setCheckingUser] = useState(false);
-
-  // 🔹 USERNAME CHANGE + SERVER VALIDATION
-  const handleUsernameChange = async (e) => {
-    const username = e.target.value;
-    setData({ ...data, username });
-
-    // Client-side validation
-    if (!username.trim()) {
-      setErrors({ username: "Username is required" });
-      setUserExists(false);
-      return;
-    }
-
-
-    // Server-side validation
-    try {
-      setCheckingUser(true);
-      const res = await axios.get(
-        `http://localhost:8080/api/Users/${username}`
-      );
-
-      if (res.data === true) {
-        setErrors({});
-        setUserExists(true);
-      } else {
-        setErrors({ username: "User not found" });
-        setUserExists(false);
-      }
-    } catch (error) {
-      setErrors({ username: "Server error" });
-      setUserExists(false);
-    } finally {
-      setCheckingUser(false);
-    }
-  };
-
-  // 🔹 PASSWORD VALIDATION
-  const handlePasswordChange = (e) => {
-    const password = e.target.value;
-    setData({ ...data, password });
-
-    if (!password.trim()) {
-      setErrors((prev) => ({
-        ...prev,
-        password: "Password is required"
-      }));
-    } else if (password.length < 6) {
-      setErrors((prev) => ({
-        ...prev,
-        password: "Password must be at least 6 characters"
-      }));
-    } else {
-      setErrors((prev) => ({ ...prev, password: null }));
-    }
-  };
-
-  // 🔹 LOGIN SUBMIT
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (!userExists || errors.password) return;
-
     try {
-      const res = await axios.post(
-        "http://localhost:8080/api/login",
-        data
-      );
-
+      const res = await axios.post("http://localhost:8080/api/user/login", data);
+      //do this, but before check res is ok
       dispatch(setUser(res.data));
-      navigate("/dashboard");
-    } catch (error) {
-      alert("Invalid password");
+
+      if(res.data.role.roleid==1){
+        navigate("/admin");
+      }
+      else if(res.data.role.roleid==2){
+        //to user
+        navigate("/user");
+      }
+      else if(res.data.role.roleid==3){
+        //to waiter
+        navigate("/waiter");
+      }
+      else if(res.data.role.roleid==4){
+        //to cook
+        navigate("/cook");
+      } 
+    } catch (err) {
+      if (err.response && err.response.data) {
+        if (err.response.data === "User not found") {
+          setUsernameError("User not found");
+        } 
+        else if (err.response.data === "Wrong password") {
+          setPasswordError("Wrong password");
+        }
+      } else {
+        setPasswordError("Something went wrong. Try again.");
+      }
     }
   };
 
@@ -101,71 +56,46 @@ function Login() {
             <h3 className="text-center mb-4">Login</h3>
 
             <form onSubmit={handleLogin}>
-              {/* USERNAME */}
               <div className="mb-3">
                 <label className="form-label">Username</label>
-
                 <input
-                  type="text"
-                  className={`form-control ${
-                    errors.username ? "is-invalid" : ""
-                  }`}
-                  value={data.username}
-                  onChange={handleUsernameChange}
+                  className="form-control"
+                  onChange={(e) => {
+                    setData({ ...data, username: e.target.value });
+                    setUsernameError("");
+                  }}
+                  required
                 />
 
-                {checkingUser && (
-                  <small className="text-info">
-                    Checking username...
-                  </small>
-                )}
-
-                {errors.username && (
-                  <div className="invalid-feedback">
-                    {errors.username}
-                  </div>
-                )}
-
-                {userExists && !errors.username && (
-                  <small className="text-success">
-                    User exists
-                  </small>
+                {usernameError && (
+                  <small className="text-danger">{usernameError}</small>
                 )}
               </div>
 
-              {/* PASSWORD */}
+
               <div className="mb-3">
                 <label className="form-label">Password</label>
-
                 <input
                   type="password"
-                  className={`form-control ${
-                    errors.password ? "is-invalid" : ""
-                  }`}
-                  value={data.password}
-                  onChange={handlePasswordChange}
+                  className="form-control"
+                  onChange={(e) => {
+                    setData({ ...data, password: e.target.value });
+                    setPasswordError("");
+                  }}
+                  required
                 />
 
-                {errors.password && (
-                  <div className="invalid-feedback">
-                    {errors.password}
-                  </div>
+                {passwordError && (
+                  <small className="text-danger">{passwordError}</small>
                 )}
               </div>
 
-              {/* LOGIN BUTTON */}
-              <button
-                className="btn btn-success w-100"
-                disabled={!userExists || errors.password}
-              >
-                Login
-              </button>
+
+              <button className="btn btn-success w-100">Login</button>
             </form>
 
             <div className="text-center mt-3">
-              <Link to="/forgetpassword">Forgot Password?</Link>
-              <br />
-              <Link to="/register">Register here</Link>
+              <Link to="/forgetpassword">Forgot Password?</Link><br />
             </div>
           </div>
         </div>

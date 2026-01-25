@@ -1,54 +1,47 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-function Register() {
+function AddMenu() {
 
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    username: "",
-    password: "",
-    mobileno: "",
-    address: "",
-    answer: "",
-    role: { roleid: 2 },
-    question: { questionid: "" }
+    menuname: "",
+    description: "",
+    price: "",
+    categoryid: "",
+    subcategoryid: "",
+    image: null
   });
 
-  const [questions, setQuestions] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
   const [errors, setErrors] = useState({});
 
-  // ✅ Validate Single Field (Real-Time)
+  // 🔹 Validation
   const validateField = (name, value) => {
     switch (name) {
-      case "username":
-        if (!value.trim()) return "Username is required";
-        if (value.length < 3) return "Username must be at least 3 characters";
+      case "menuname":
+        if (!value.trim()) return "Menu name is required";
+        if (value.length < 3) return "Menu name must be at least 3 characters";
         break;
 
-      case "password":
-        if (!value) return "Password is required";
-        if (value.length < 6) return "Password must be at least 6 characters";
-        if (!/[A-Z]/.test(value)) return "Password must contain one uppercase letter";
-        if (!/[0-9]/.test(value)) return "Password must contain one number";
+      case "price":
+        if (!value) return "Price is required";
+        if (value <= 0) return "Price must be greater than 0";
         break;
 
-      case "mobileno":
-        if (!value) return "Mobile number is required";
-        if (!/^[0-9]{10}$/.test(value)) return "Mobile number must be 10 digits";
+      case "categoryid":
+        if (!value) return "Category is required";
         break;
 
-      case "address":
-        if (!value.trim()) return "Address is required";
+      case "subcategoryid":
+        if (!value) return "SubCategory is required";
         break;
 
-      case "questionid":
-        if (!value) return "Please select a security question";
-        break;
-
-      case "answer":
-        if (!value.trim()) return "Answer is required";
+      case "image":
+        if (!value) return "Image is required";
         break;
 
       default:
@@ -57,53 +50,65 @@ function Register() {
     return "";
   };
 
-  // ✅ Handle Input Change with Validation
+  // 🔹 Handle change
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
 
-    let updatedForm;
-
-    if (name === "questionid") {
-      updatedForm = { ...form, question: { questionid: value } };
+    if (name === "image") {
+      setForm({ ...form, image: files[0] });
+      setErrors({ ...errors, image: validateField("image", files[0]) });
     } else {
-      updatedForm = { ...form, [name]: value };
+      setForm({ ...form, [name]: value });
+      setErrors({ ...errors, [name]: validateField(name, value) });
     }
-
-    setForm(updatedForm);
-
-    setErrors({
-      ...errors,
-      [name === "questionid" ? "question" : name]: validateField(name, value)
-    });
   };
 
-  // ✅ Load Questions
+  // 🔹 Load categories & subcategories
   useEffect(() => {
-    axios.get("http://localhost:8080/api/questions")
-      .then(res => setQuestions(res.data));
+    axios.get("http://localhost:8080/api/getAllCategory")
+      .then(res => setCategories(res.data));
+      console.log(response.data);
+
+    axios.get("http://localhost:8080/api/getAllSubCategory")
+      .then(res => setSubcategories(res.data));
+      console.log(response.data);
   }, []);
 
-  // ✅ Final Submit Validation
+  const filteredSubCategories = subcategories.filter(
+    sub => sub.category?.categoryid == form.categoryid
+  );
+
+  // 🔹 Submit
   const submit = async (e) => {
     e.preventDefault();
 
     const newErrors = {
-      username: validateField("username", form.username),
-      password: validateField("password", form.password),
-      mobileno: validateField("mobileno", form.mobileno),
-      address: validateField("address", form.address),
-      question: validateField("questionid", form.question.questionid),
-      answer: validateField("answer", form.answer)
+      menuname: validateField("menuname", form.menuname),
+      price: validateField("price", form.price),
+      categoryid: validateField("categoryid", form.categoryid),
+      subcategoryid: validateField("subcategoryid", form.subcategoryid),
+      image: validateField("image", form.image)
     };
 
     setErrors(newErrors);
     if (Object.values(newErrors).some(err => err)) return;
+
+    const formData = new FormData();
+    formData.append("menuname", form.menuname);
+    formData.append("description", form.description);
+    formData.append("price", form.price);
+    formData.append("categoryid", form.categoryid);
+    formData.append("subcategoryid", form.subcategoryid);
+    formData.append("image", form.image);
+
     try {
-      await axios.post("http://localhost:8080/api/register", form);
-      alert("Registered successfully");
-      navigate("/");
+      await axios.post("http://localhost:8080/api/menu", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      alert("Menu added successfully");
+      navigate("/dashboard"); // change if needed
     } catch {
-      alert("Registration failed");
+      alert("Failed to add menu");
     }
   };
 
@@ -112,99 +117,105 @@ function Register() {
       <div className="row justify-content-center align-items-center min-vh-100">
         <div className="col-md-6">
           <div className="card shadow p-4">
-            <h3 className="text-center mb-3">Register</h3>
+
+            <h3 className="text-center mb-3">Add Menu</h3>
 
             <form onSubmit={submit} className="row g-3">
 
-              {/* Username */}
+              {/* Menu Name */}
               <div className="col-md-6">
                 <input
                   className="form-control"
-                  name="username"
-                  value={form.username}
-                  placeholder="Username"
+                  name="menuname"
+                  placeholder="Menu Name"
+                  value={form.menuname}
                   onChange={handleChange}
                 />
-                <small className="text-danger">{errors.username}</small>
+                <small className="text-danger">{errors.menuname}</small>
               </div>
 
-              {/* Password */}
+              {/* Price */}
               <div className="col-md-6">
                 <input
-                  type="password"
+                  type="number"
                   className="form-control"
-                  name="password"
-                  value={form.password}
-                  placeholder="Password"
+                  name="price"
+                  placeholder="Price"
+                  value={form.price}
                   onChange={handleChange}
                 />
-                <small className="text-danger">{errors.password}</small>
+                <small className="text-danger">{errors.price}</small>
               </div>
 
-              {/* Mobile */}
-              <div className="col-md-6">
-                <input
+              {/* Description */}
+              <div className="col-md-12">
+                <textarea
                   className="form-control"
-                  name="mobileno"
-                  value={form.mobileno}
-                  placeholder="Mobile"
+                  name="description"
+                  placeholder="Description"
+                  value={form.description}
                   onChange={handleChange}
                 />
-                <small className="text-danger">{errors.mobileno}</small>
               </div>
 
-              {/* Address */}
-              <div className="col-md-6">
-                <input
-                  className="form-control"
-                  name="address"
-                  value={form.address}
-                  placeholder="Address"
-                  onChange={handleChange}
-                />
-                <small className="text-danger">{errors.address}</small>
-              </div>
-
-              {/* Question */}
+              {/* Category */}
               <div className="col-md-6">
                 <select
                   className="form-select"
-                  name="questionid"
-                  value={form.question.questionid}
+                  name="categoryid"
+                  value={form.categoryid}
                   onChange={handleChange}
                 >
-                  <option value="">Select Question</option>
-                  {questions.map(q => (
-                    <option key={q.questionid} value={q.questionid}>
-                      {q.question}
+                  <option value="">Select Category</option>
+                  {categories.map(cat => (
+                    <option key={cat.categoryid} value={cat.categoryid}>
+                      {cat.categoryname}
                     </option>
                   ))}
                 </select>
-                <small className="text-danger">{errors.question}</small>
+                <small className="text-danger">{errors.categoryid}</small>
               </div>
 
-              {/* Answer */}
+              {/* SubCategory */}
               <div className="col-md-6">
+                <select
+                  className="form-select"
+                  name="subcategoryid"
+                  value={form.subcategoryid}
+                  onChange={handleChange}
+                >
+                  <option value="">Select SubCategory</option>
+                  {filteredSubCategories.map(sub => (
+                    <option key={sub.subcategoryid} value={sub.subcategoryid}>
+                      {sub.subcategoryname}
+                    </option>
+                  ))}
+                </select>
+                <small className="text-danger">{errors.subcategoryid}</small>
+              </div>
+
+              {/* Image */}
+              <div className="col-md-12">
                 <input
+                  type="file"
                   className="form-control"
-                  name="answer"
-                  value={form.answer}
-                  placeholder="Answer"
+                  name="image"
+                  accept="image/*"
                   onChange={handleChange}
                 />
-                <small className="text-danger">{errors.answer}</small>
+                <small className="text-danger">{errors.image}</small>
               </div>
 
               <div className="col-12">
                 <button className="btn btn-success w-100">
-                  Register
+                  Save Menu
                 </button>
               </div>
 
             </form>
 
             <div className="text-center mt-3">
-              <Link to="/">Back to Login</Link>
+              <Link to="/dashboard">Back</Link>
             </div>
 
           </div>
@@ -214,4 +225,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default AddMenu;

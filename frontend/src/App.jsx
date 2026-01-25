@@ -11,6 +11,7 @@ import UserDashboard from "./pages/user/UserDashboard";
 import WaiterDashboard from "./pages/waiter/WaiterDashboard";
 import CookDashboard from "./pages/cook/CookDashboard";
 import Navbar from "./pages/Navbar";
+import AddMenu from "./pages/addMenu";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
+        <Route path="/addMenu" element={<AddMenu />} />
 
         <Route path="/admin" element={
           <ProtectedRoute role="Admin">
