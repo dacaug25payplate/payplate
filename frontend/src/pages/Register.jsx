@@ -179,4 +179,4 @@ function Register() {
   );
 }
 
-export default AddMenu;
+export default Register;
