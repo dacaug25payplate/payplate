@@ -2,7 +2,6 @@ package com.payplate.authentication.controller;
 
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +27,16 @@ public class UserController {
     private QuestionRepository questionRepo;
     
 <<<<<<< HEAD
+<<<<<<< HEAD
     @Autowired
     private RoleRepository roleRepo;
 =======
     
 >>>>>>> 0d8dcb55bd90cd8e673e695e3287dac8eb66b53a
+=======
+    @Autowired
+    private RoleRepository roleRepo;
+>>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
 
     // REGISTER
     @PostMapping("/register")
@@ -88,10 +92,14 @@ public class UserController {
     }
     
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
     //LOAD ROLES FOR  STAFF REGISTER
     @GetMapping("/staff")
     public List<Role> getStaff(){
     	return roleRepo.findByRoleidIn(List.of(3,4));
+<<<<<<< HEAD
 =======
     // Check for user valid or not for login
     @GetMapping("/Users/{username}")
@@ -100,6 +108,8 @@ public class UserController {
     	Optional<User> user = service.isUserNameExists(username);
     	return user.isPresent();
 >>>>>>> 0d8dcb55bd90cd8e673e695e3287dac8eb66b53a
+=======
+>>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
     }
 }
 

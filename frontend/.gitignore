@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Logs
 =======
 # # Logs
@@ -26,6 +27,9 @@
 # *.sln
 # *.sw?
 >>>>>>> 0d8dcb55bd90cd8e673e695e3287dac8eb66b53a
+=======
+# Logs
+>>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
 .metadata/
 logs
 *.log
@@ -47,14 +51,18 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
-.ntvs
+*.ntvs*
 *.njsproj
 *.sln
 *.sw?
 .metadata/
 *.log
 <<<<<<< HEAD
+<<<<<<< HEAD
 .recommenders/
 =======
 .recommenders/
 >>>>>>> 0d8dcb55bd90cd8e673e695e3287dac8eb66b53a
+=======
+.recommenders/
+>>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10

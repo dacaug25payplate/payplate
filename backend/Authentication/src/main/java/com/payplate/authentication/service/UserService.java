@@ -1,8 +1,6 @@
 package com.payplate.authentication.service;
 
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +51,7 @@ public class UserService {
         return true;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
     
@@ -61,5 +60,8 @@ public class UserService {
     	return repo.findByUsername(username);
     }
 >>>>>>> 0d8dcb55bd90cd8e673e695e3287dac8eb66b53a
+=======
+
+>>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
 }
 
