@@ -14,15 +14,25 @@ public class UserService {
     @Autowired
     private UserRepository repo;
 
+    
     public User register(User user) {
         return repo.save(user);
     }
 
     public User login(String username, String password) {
         User user = repo.findByUsername(username).orElse(null);
-        if (user == null || !user.getPassword().equals(password)) return null;
+
+        if (user == null) {
+            throw new RuntimeException("USER_NOT_FOUND");
+        }
+
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("WRONG_PASSWORD");
+        }
+
         return user;
     }
+
 
     public String getQuestion(String username) {
         User user = repo.findByUsername(username).orElse(null);

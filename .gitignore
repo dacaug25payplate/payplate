@@ -1,13 +1,19 @@
-.DS_Store
-<<<<<<< HEAD
-# Eclipse / STS
-.metadata/
-.recommenders/
-*.log
+# Node
+node_modules/
 
 # Build
-target/
-node_modules/
 dist
-=======
->>>>>>> origin/dev_sujit
+
+# Logs
+logs
+*.log
+
+# OS files
+.DS_Store
+
+# IDE
+.metadata/
+.recommenders/
+.idea/
+.vscode/
+

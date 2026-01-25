@@ -33,11 +33,23 @@ public class UserController {
     // LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
-        User logged = service.login(user.getUsername(), user.getPassword());
-        if (logged == null)
-            return ResponseEntity.status(401).body("Invalid credentials");
-        return ResponseEntity.ok(logged);
+        try {
+            User logged = service.login(user.getUsername(), user.getPassword());
+            return ResponseEntity.ok(logged);
+        } catch (RuntimeException e) {
+
+            if (e.getMessage().equals("USER_NOT_FOUND")) {
+                return ResponseEntity.status(404).body("User not found");
+            }
+
+            if (e.getMessage().equals("WRONG_PASSWORD")) {
+                return ResponseEntity.status(401).body("Wrong password");
+            }
+
+            return ResponseEntity.status(500).body("Something went wrong");
+        }
     }
+
 
     // GET QUESTION
     @GetMapping("/forgot/{username}")
