@@ -1,8 +1,6 @@
 package com.payplate.authentication.service;
 
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,14 +50,6 @@ public class UserService {
         repo.save(user);
         return true;
     }
-<<<<<<< HEAD
-    
-    public Optional<User> isUserNameExists(String username)
-    {
-    	return repo.findByUsername(username);
-    }
-=======
 
->>>>>>> c375c3d49ffd68eb9efeea76a6cda92744c411a4
 }
 
