@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 
 function Register() {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     username: "",
@@ -21,14 +20,14 @@ function Register() {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/questions")
+    axios.get("http://localhost:8080/api/user/questions")
       .then(res => setQuestions(res.data));
   }, []);
 
   const submit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/api/register", form);
+      await axios.post("http://localhost:8080/api/user/register", form);
       alert("Registered successfully");
       navigate("/");
     } catch {
@@ -46,26 +45,31 @@ function Register() {
             <form onSubmit={submit} className="row g-3">
               <div className="col-md-6">
                 <input className="form-control" placeholder="Username"
+                value={form.username}
                   onChange={e => setForm({ ...form, username: e.target.value })} />
               </div>
 
               <div className="col-md-6">
                 <input className="form-control" placeholder="Password"
+                value={form.password}
                   onChange={e => setForm({ ...form, password: e.target.value })} />
               </div>
 
               <div className="col-md-6">
                 <input className="form-control" placeholder="Mobile"
+                value={form.mobileno}
                   onChange={e => setForm({ ...form, mobileno: e.target.value })} />
               </div>
 
               <div className="col-md-6">
                 <input className="form-control" placeholder="Address"
+                value={form.address}
                   onChange={e => setForm({ ...form, address: e.target.value })} />
               </div>
 
               <div className="col-md-6">
                 <select className="form-select"
+                value={form.question.questionid}
                   onChange={e => setForm({ ...form, question: { questionid: e.target.value } })}>
                   <option>Select Question</option>
                   {questions.map(q => (
@@ -78,6 +82,7 @@ function Register() {
 
               <div className="col-md-6">
                 <input className="form-control" placeholder="Answer"
+                value={form.answer}
                   onChange={e => setForm({ ...form, answer: e.target.value })} />
               </div>
 
@@ -85,10 +90,6 @@ function Register() {
                 <button className="btn btn-success w-100">Register</button>
               </div>
             </form>
-
-            <div className="text-center mt-3">
-              <Link to="/">Back to Login</Link>
-            </div>
           </div>
         </div>
       </div>

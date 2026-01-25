@@ -6,18 +6,45 @@ import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
   const [data, setData] = useState({ username: "", password: "" });
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/api/login", data);
+      const res = await axios.post("http://localhost:8080/api/user/login", data);
+      //do this, but before check res is ok
       dispatch(setUser(res.data));
-      console.log(res.data);
-      navigate("/dashboard");
-    } catch {
-      alert("Invalid username or password");
+
+      if(res.data.role.roleid==1){
+        navigate("/admin");
+      }
+      else if(res.data.role.roleid==2){
+        //to user
+        navigate("/user");
+      }
+      else if(res.data.role.roleid==3){
+        //to waiter
+        navigate("/waiter");
+      }
+      else if(res.data.role.roleid==4){
+        //to cook
+        navigate("/cook");
+      } 
+    } catch (err) {
+      if (err.response && err.response.data) {
+        if (err.response.data === "User not found") {
+          setUsernameError("User not found");
+        } 
+        else if (err.response.data === "Wrong password") {
+          setPasswordError("Wrong password");
+        }
+      } else {
+        setPasswordError("Something went wrong. Try again.");
+      }
     }
   };
 
@@ -31,26 +58,44 @@ function Login() {
             <form onSubmit={handleLogin}>
               <div className="mb-3">
                 <label className="form-label">Username</label>
-                <input className="form-control"
-                  onChange={(e) => setData({ ...data, username: e.target.value })}
+                <input
+                  className="form-control"
+                  onChange={(e) => {
+                    setData({ ...data, username: e.target.value });
+                    setUsernameError("");
+                  }}
                   required
                 />
+
+                {usernameError && (
+                  <small className="text-danger">{usernameError}</small>
+                )}
               </div>
+
 
               <div className="mb-3">
                 <label className="form-label">Password</label>
-                <input type="password" className="form-control"
-                  onChange={(e) => setData({ ...data, password: e.target.value })}
+                <input
+                  type="password"
+                  className="form-control"
+                  onChange={(e) => {
+                    setData({ ...data, password: e.target.value });
+                    setPasswordError("");
+                  }}
                   required
                 />
+
+                {passwordError && (
+                  <small className="text-danger">{passwordError}</small>
+                )}
               </div>
+
 
               <button className="btn btn-success w-100">Login</button>
             </form>
 
             <div className="text-center mt-3">
               <Link to="/forgetpassword">Forgot Password?</Link><br />
-              <Link to="/register">Register here</Link>
             </div>
           </div>
         </div>
