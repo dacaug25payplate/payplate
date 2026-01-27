@@ -7,5 +7,4 @@ import com.payplate.menuservice.entities.Menu;
 
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
-	
 }
