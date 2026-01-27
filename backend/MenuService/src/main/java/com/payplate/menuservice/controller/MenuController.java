@@ -50,7 +50,11 @@ public class MenuController {
 	}
 	
 
+<<<<<<< HEAD
 	//endpoint for save menu
+=======
+	// Add menu to admin
+>>>>>>> b0c01b1949121124848cdb6f02dd4c7f7b161532
 	@PostMapping("/menu")
 	public ResponseEntity<String> saveMenu(
 			@RequestParam String menuname,
@@ -88,6 +92,12 @@ public class MenuController {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().body("Failed to save menu");
 		}
+	}
+	
+	// view menu to admin
+	@GetMapping("/getAllMenu")
+	public List<Menu> getAllMenu(){
+		return menuService.getAllMenu();
 	}
 
 }

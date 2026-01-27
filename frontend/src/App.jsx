@@ -9,11 +9,16 @@ import UserDashboard from "./pages/user/UserDashboard";
 import WaiterDashboard from "./pages/waiter/WaiterDashboard";
 import CookDashboard from "./pages/cook/CookDashboard";
 import Navbar from "./pages/Navbar";
-import Order from "./pages/admin/order";
 import Viewmenu from "./pages/admin/viewMenu";
 import AddDiscount from "./pages/admin/addDiscount";
 import Viewfeedback from "./pages/admin/viewfeedback";
+<<<<<<< HEAD
 import AddMenu from "./pages/AddMenu";
+=======
+import StaffList from "./pages/admin/staffList";
+import StaffRegister from "./pages/admin/staffRegister";
+import AddMenu from "./pages/admin/AddMenu"
+>>>>>>> b0c01b1949121124848cdb6f02dd4c7f7b161532
 
 const AuthLayoutWithNavbar = () => (
   <>
@@ -36,36 +41,43 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/",
-    element: <DashboardLayout />,
-    children: [
-      { path: "user", element: <UserDashboard /> },
-      { path: "cook", element: <CookDashboard /> },
-      { path: "waiter", element: <WaiterDashboard /> }
-    ]
-  },
-  {
     path: "/admin",
-    element: <AdminDashboard />, // ✅ layout ONLY
+    element: <AdminDashboard />,
     children: [
+<<<<<<< HEAD
       // { index: true, element: <Dashboard /> },
       { path: "/admin/createStaff", element: <StaffRegister/> },
       { path: "/admin/addmenu", element: <AddMenu /> },
+=======
+      // { index: true, element: <Dashboard /> }, 
+      { path: "/admin/createStaff", element: <StaffList/> },
+       { path: "/admin/addStaff", element: <StaffRegister/> },
+       { path: "/admin/addmenu", element: <AddMenu /> },
+>>>>>>> b0c01b1949121124848cdb6f02dd4c7f7b161532
       { path: "/admin/viewmenu", element: <Viewmenu/> },
-    //   { path: "viewmenu/veg", element: <Viewmenu type="VEG" /> },
-    // { path: "viewmenu/nonveg", element: <Viewmenu type="NON_VEG" /> }
       { path: "/admin/adddiscount", element: <AddDiscount /> },
       { path: "/admin/viewfeedbacks", element: <Viewfeedback /> },
     ]
   },
   {
-    path: "/admin",
-    element: <AdminDashboard />, // ✅ layout ONLY
+    path: "/cook",
+    element: <CookDashboard />,
     children: [
-      // { index: true, element: <Dashboard /> },
-      { path: "/admin/order", element: <Order /> },
-      // { path: "billing", element: <Billing /> },
-      // { path: "menu", element: <Menu /> }
+      { path: "/cook/viewmenu", element: <Viewmenu /> }
+    ]
+  },
+  {
+    path: "/waiter",
+    element: <WaiterDashboard />,
+    children: [
+      { path: "/waiter/viewmenu", element: <Viewmenu /> }
+    ]
+  },
+  {
+    path: "/user",
+    element: <UserDashboard />,
+    children: [
+      { path: "/user/viewmenu", element: <Viewmenu /> }
     ]
   }
 ]);

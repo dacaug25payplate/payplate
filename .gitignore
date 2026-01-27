@@ -1,1 +1,90 @@
+<<<<<<< HEAD
 backend/.metadata/.plugins/org.eclipse.m2e.logback/0.log
+=======
+##################################
+# ===== Java / Spring Boot =====
+##################################
+*.class
+*.log
+hs_err_pid*
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Gradle
+.gradle/
+build/
+
+##################################
+# ===== IDE (Eclipse / STS) =====
+##################################
+.project
+.classpath
+.settings/
+.springBeans
+.factorypath
+.metadata/
+
+
+##################################
+# ===== IDE (IntelliJ) =====
+##################################
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+##################################
+# ===== VS Code =====
+##################################
+.vscode/
+
+##################################
+# ===== React / Node / Vite =====
+##################################
+node_modules/
+dist/
+build/
+.vite/
+.cache/
+
+##################################
+# ===== Logs =====
+##################################
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+##################################
+# ===== Environment / Secrets =====
+##################################
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+
+##################################
+# ===== OS Junk =====
+##################################
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+>>>>>>> b0c01b1949121124848cdb6f02dd4c7f7b161532

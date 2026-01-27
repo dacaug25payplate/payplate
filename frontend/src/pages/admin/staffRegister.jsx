@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function StaffRegister() {
+
+  const navigate = useNavigate();
 
   const initialForm = {
     username: "",
@@ -41,7 +44,16 @@ function StaffRegister() {
   return (
     <div className="p-4">
 
-      <h4 className="mb-3">Add New Staff</h4>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h4>Register Staff</h4>
+
+        <button
+          className="btn btn-primary"
+          onClick={() => navigate("/admin/createStaff")}
+        >
+          back
+        </button>
+      </div>
 
       <div className="card p-4 shadow-sm">
 

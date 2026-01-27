@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
-import Header from "../admin/AdminLayout/header";
-import SideNav from "../admin/AdminLayout/sidenavbar";
-import Footer from "../admin/AdminLayout/footer";
+
+import Header from "../cook/CookLayout/header";
+import SideNav from "../cook/CookLayout/sidenavbar";
+import Footer from "../cook/CookLayout/footer";
 
 function CookDashboard() {
   return (
