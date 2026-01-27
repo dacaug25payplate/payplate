@@ -10,7 +10,6 @@ import WaiterDashboard from "./pages/waiter/WaiterDashboard";
 import CookDashboard from "./pages/cook/CookDashboard";
 import Navbar from "./pages/Navbar";
 import Order from "./pages/admin/order";
-import StaffRegister from "./pages/admin/staffRegister";
 import Viewmenu from "./pages/admin/viewMenu";
 import AddDiscount from "./pages/admin/addDiscount";
 import Viewfeedback from "./pages/admin/viewfeedback";

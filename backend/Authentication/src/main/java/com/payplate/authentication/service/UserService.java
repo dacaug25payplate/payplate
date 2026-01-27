@@ -1,6 +1,8 @@
 package com.payplate.authentication.service;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +52,14 @@ public class UserService {
         repo.save(user);
         return true;
     }
+
+	public List<User> getStaff() {
+		return repo.findByRole_RoleidIn(List.of(3, 4));
+	}
+	
+	public void deleteStaff(int id) {
+		repo.deleteById(id);
+	}
 
 }
 

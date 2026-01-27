@@ -84,9 +84,23 @@ public class UserController {
     
     //LOAD ROLES FOR  STAFF REGISTER
     @GetMapping("/staff")
-    public List<Role> getStaff(){
+    public List<Role> getStaffRole(){
     	return roleRepo.findByRoleidIn(List.of(3,4));
     }
+    
+    // LOAD STAFF FOR ADMIN
+    @GetMapping("/getstaff")
+    public List<User> getStaff(){
+    	return service.getStaff();
+    }
+    
+    //Delete STAFF BY ADMIN
+    @DeleteMapping("/deleteStaff/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable int id){
+    	service.deleteStaff(id);
+    	return ResponseEntity.ok("Deleted successfully");
+    }
+    
 }
 
 
