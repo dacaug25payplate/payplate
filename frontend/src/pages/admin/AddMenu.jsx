@@ -3,127 +3,195 @@ import axios from "axios";
 
 function AddMenu() {
 
-  const [menuname, setMenuname] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
+  const [form, setForm] = useState({
+    menuname: "",
+    price: "",
+    description: "",
+    categoryid: "",
+    subcategoryid: "",
+    image: null
+  });
 
-  const [categoryid, setCategoryid] = useState("");
-  const [subcategoryid, setSubcategoryid] = useState("");
-
+  const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
 
-  const [image, setImage] = useState(null);
-
-  // Load categories
   useEffect(() => {
-    axios.get("http://localhost:8080/api/getAllCategory")
-      .then((res) => {
-        console.log("Categories:", res.data);
-        setCategories(res.data);
-      })
-      .catch((err) => console.log(err));
+    axios.get("http://localhost:8081/api/getAllCategory")
+      .then(res => setCategories(res.data));
+
+    axios.get("http://localhost:8081/api/getAllSubCategory")
+      .then(res => setSubcategories(res.data));
   }, []);
 
-  // Load subcategories (NO FILTERING YET)
-  useEffect(() => {
-    axios.get("http://localhost:8080/api/getAllSubCategory")
-      .then((res) => {
-        console.log("SubCategories:", res.data);
-        setSubcategories(res.data);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  const validateField = (name, value) => {
+    let error = "";
+
+    switch (name) {
+      case "menuname":
+        if (!value.trim()) error = "Menu name is required";
+        break;
+      case "price":
+        if (!value) error = "Price is required";
+        else if (!/^\d+(\.\d{1,2})?$/.test(value))
+          error = "Only numbers allowed";
+        break;
+      case "description":
+        if (!value.trim()) error = "Description is required";
+        break;
+      case "categoryid":
+        if (!value) error = "Select category";
+        break;
+      case "subcategoryid":
+        if (!value) error = "Select subcategory";
+        break;
+      case "image":
+        if (!value) error = "Image is required";
+        break;
+      default:
+        break;
+    }
+
+    setErrors(prev => ({ ...prev, [name]: error }));
+    return !error;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "price" && value && !/^\d*\.?\d*$/.test(value)) return;
+    setForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleBlur = (e) => {
+    validateField(e.target.name, e.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let valid = true;
+    Object.keys(form).forEach(key => {
+      if (!validateField(key, form[key])) valid = false;
+    });
+
+    if (!valid) return;
+
     const formData = new FormData();
-    formData.append("menuname", menuname);
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("categoryid", categoryid);
-    formData.append("subcategoryid", subcategoryid);
-    formData.append("image", image);
+    Object.keys(form).forEach(key => formData.append(key, form[key]));
 
     try {
-      await axios.post("http://localhost:8080/api/menu", formData);
-      console.log(formData);
+      await axios.post("http://localhost:8081/api/menu", formData);
       alert("Menu added successfully");
-    } catch (err) {
+    } catch {
       alert("Failed to add menu");
     }
   };
 
   return (
-    <div style={{ width: "400px", margin: "auto" }}>
-      <h3>Add Menu</h3>
+    <div className="p-4">
 
-      <form onSubmit={handleSubmit}>
+      <h4 className="mb-3">Add New Menu</h4>
 
-        <input
-          placeholder="Menu Name"
-          value={menuname}
-          onChange={(e) => setMenuname(e.target.value)}
-        />
+      <div className="card p-4 shadow-sm">
 
-        <br /><br />
+        <form onSubmit={handleSubmit} className="row g-3">
 
-        <input
-          placeholder="Price"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
+          <div className="col-md-6">
+            <label className="form-label">Menu Name</label>
+            <input
+              className="form-control"
+              name="menuname"
+              value={form.menuname}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.menuname && <small className="text-danger">{errors.menuname}</small>}
+          </div>
 
-        <br /><br />
+          <div className="col-md-6">
+            <label className="form-label">Price</label>
+            <input
+              className="form-control"
+              name="price"
+              value={form.price}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.price && <small className="text-danger">{errors.price}</small>}
+          </div>
 
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <div className="col-12">
+            <label className="form-label">Description</label>
+            <textarea
+              className="form-control"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              rows={3}
+            />
+            {errors.description && <small className="text-danger">{errors.description}</small>}
+          </div>
 
-        <br /><br />
+          <div className="col-md-6">
+            <label className="form-label">Category</label>
+            <select
+              className="form-select"
+              name="categoryid"
+              value={form.categoryid}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            >
+              <option value="">Select Category</option>
+              {categories.map(cat => (
+                <option key={cat.categoryid} value={cat.categoryid}>
+                  {cat.categoryname}
+                </option>
+              ))}
+            </select>
+            {errors.categoryid && <small className="text-danger">{errors.categoryid}</small>}
+          </div>
 
-        {/* CATEGORY */}
-        <select
-          value={categoryid}
-          onChange={(e) => setCategoryid(e.target.value)}
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat) => (
-            <option key={cat.categoryid} value={cat.categoryid}>
-              {cat.categoryname}
-            </option>
-          ))}
-        </select>
+          <div className="col-md-6">
+            <label className="form-label">Sub Category</label>
+            <select
+              className="form-select"
+              name="subcategoryid"
+              value={form.subcategoryid}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            >
+              <option value="">Select SubCategory</option>
+              {subcategories.map(sub => (
+                <option key={sub.subcategoryid} value={sub.subcategoryid}>
+                  {sub.subcategoryname}
+                </option>
+              ))}
+            </select>
+            {errors.subcategoryid && <small className="text-danger">{errors.subcategoryid}</small>}
+          </div>
 
-        <br /><br />
+          <div className="col-12">
+            <label className="form-label">Menu Image</label>
+            <input
+              type="file"
+              className="form-control"
+              onChange={e => {
+                setForm(prev => ({ ...prev, image: e.target.files[0] }));
+                validateField("image", e.target.files[0]);
+              }}
+            />
+            {errors.image && <small className="text-danger">{errors.image}</small>}
+          </div>
 
-        {/* SUBCATEGORY (NO FILTER) */}
-        <select
-          value={subcategoryid}
-          onChange={(e) => setSubcategoryid(e.target.value)}
-        >
-          <option value="">Select SubCategory</option>
-          {subcategories.map((sub) => (
-            <option key={sub.subcategoryid} value={sub.subcategoryid}>
-              {sub.subcategoryname}
-            </option>
-          ))}
-        </select>
+          <div className="col-12 text-center mt-3">
+            <button className="btn btn-success px-5">
+              Save Menu
+            </button>
+          </div>
 
-        <br /><br />
-
-        <input
-          type="file"
-          onChange={(e) => setImage(e.target.files[0])}
-        />
-
-        <br /><br />
-
-        <button type="submit">Save Menu</button>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

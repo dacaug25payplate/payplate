@@ -26,17 +26,8 @@ public class UserController {
     @Autowired
     private QuestionRepository questionRepo;
     
-<<<<<<< HEAD
-<<<<<<< HEAD
     @Autowired
     private RoleRepository roleRepo;
-=======
-    
->>>>>>> 0d8dcb55bd90cd8e673e695e3287dac8eb66b53a
-=======
-    @Autowired
-    private RoleRepository roleRepo;
->>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
 
     // REGISTER
     @PostMapping("/register")
@@ -91,26 +82,25 @@ public class UserController {
         return questionRepo.findAll();
     }
     
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
     //LOAD ROLES FOR  STAFF REGISTER
     @GetMapping("/staff")
-    public List<Role> getStaff(){
+    public List<Role> getStaffRole(){
     	return roleRepo.findByRoleidIn(List.of(3,4));
-<<<<<<< HEAD
-=======
-    // Check for user valid or not for login
-    @GetMapping("/Users/{username}")
-    public boolean isUserExists(@PathVariable String username)
-    {
-    	Optional<User> user = service.isUserNameExists(username);
-    	return user.isPresent();
->>>>>>> 0d8dcb55bd90cd8e673e695e3287dac8eb66b53a
-=======
->>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
     }
+    
+    // LOAD STAFF FOR ADMIN
+    @GetMapping("/getstaff")
+    public List<User> getStaff(){
+    	return service.getStaff();
+    }
+    
+    //Delete STAFF BY ADMIN
+    @DeleteMapping("/deleteStaff/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable int id){
+    	service.deleteStaff(id);
+    	return ResponseEntity.ok("Deleted successfully");
+    }
+    
 }
 
 

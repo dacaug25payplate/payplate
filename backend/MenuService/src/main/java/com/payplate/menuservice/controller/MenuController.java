@@ -49,7 +49,7 @@ public class MenuController {
 		return menuService.getAllSubCategory();
 	}
 
-	// 
+	// Add menu to admin
 	@PostMapping("/menu")
 	public ResponseEntity<String> saveMenu(
 			@RequestParam String menuname,
@@ -87,6 +87,12 @@ public class MenuController {
 			e.printStackTrace();
 			return ResponseEntity.badRequest().body("Failed to save menu");
 		}
+	}
+	
+	// view menu to admin
+	@GetMapping("/getAllMenu")
+	public List<Menu> getAllMenu(){
+		return menuService.getAllMenu();
 	}
 
 }

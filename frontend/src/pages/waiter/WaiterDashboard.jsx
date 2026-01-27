@@ -1,8 +1,23 @@
+import { Outlet } from "react-router-dom";
+
+import Footer from "../waiter/WaiterLayout/footer";
+import Header from "../waiter/WaiterLayout/header";
+import SideNav from "../waiter/WaiterLayout/sidenavbar";
+
 function WaiterDashboard() {
   return (
-    <h1 className="text-center mt-5">
-      Welcome to dashboard Waiter
-    </h1>
+    <div className="d-flex flex-column vh-100">
+      <Header />
+
+      <div className="d-flex flex-grow-1">
+        <SideNav />
+        <main className="flex-grow-1 p-4 bg-light">
+          <Outlet />
+        </main>
+      </div>
+
+      <Footer />
+    </div>
   );
 }
 

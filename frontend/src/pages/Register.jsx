@@ -3,10 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
 function Register() {
 
   const navigate = useNavigate();
@@ -65,10 +61,6 @@ function Register() {
                   onChange={e => setForm({ ...form, mobileno: e.target.value })} />
               </div>
 
-<<<<<<< HEAD
-              {/* Category */}
-=======
->>>>>>> 7098f928de0009be0fb5d267fbd9835b285e9e10
               <div className="col-md-6">
                 <input className="form-control" placeholder="Address"
                 value={form.address}
