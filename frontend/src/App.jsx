@@ -12,9 +12,11 @@ import Navbar from "./pages/Navbar";
 import Viewmenu from "./pages/admin/viewMenu";
 import AddDiscount from "./pages/admin/addDiscount";
 import Viewfeedback from "./pages/admin/viewfeedback";
+
 import StaffList from "./pages/admin/staffList";
 import StaffRegister from "./pages/admin/staffRegister";
-import AddMenu from "./pages/admin/AddMenu"
+import AddMenu from "./pages/admin/AddMenu";
+
 
 const AuthLayoutWithNavbar = () => (
   <>
