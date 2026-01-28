@@ -7,9 +7,6 @@ function SideNav() {
       <ul className="nav flex-column p-3">
 
         <li className="nav-item">
-          <Link className="nav-link" to="/user/viewmenu">
-            View Menu user
-          </Link>
         </li>
       </ul>
     </div>

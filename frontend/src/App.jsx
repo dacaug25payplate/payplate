@@ -1,3 +1,4 @@
+
 import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Login from "./pages/Login";
@@ -12,13 +13,10 @@ import Navbar from "./pages/Navbar";
 import Viewmenu from "./pages/admin/viewMenu";
 import AddDiscount from "./pages/admin/addDiscount";
 import Viewfeedback from "./pages/admin/viewfeedback";
-<<<<<<< HEAD
-import AddMenu from "./pages/AddMenu";
-=======
 import StaffList from "./pages/admin/staffList";
 import StaffRegister from "./pages/admin/staffRegister";
 import AddMenu from "./pages/admin/AddMenu"
->>>>>>> b0c01b1949121124848cdb6f02dd4c7f7b161532
+import UserViewmenu from "./pages/user/UserViewMenu";
 
 const AuthLayoutWithNavbar = () => (
   <>
@@ -44,16 +42,10 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminDashboard />,
     children: [
-<<<<<<< HEAD
-      // { index: true, element: <Dashboard /> },
-      { path: "/admin/createStaff", element: <StaffRegister/> },
-      { path: "/admin/addmenu", element: <AddMenu /> },
-=======
-      // { index: true, element: <Dashboard /> }, 
+       { index: true, element: <Viewmenu /> }, 
       { path: "/admin/createStaff", element: <StaffList/> },
        { path: "/admin/addStaff", element: <StaffRegister/> },
        { path: "/admin/addmenu", element: <AddMenu /> },
->>>>>>> b0c01b1949121124848cdb6f02dd4c7f7b161532
       { path: "/admin/viewmenu", element: <Viewmenu/> },
       { path: "/admin/adddiscount", element: <AddDiscount /> },
       { path: "/admin/viewfeedbacks", element: <Viewfeedback /> },
@@ -77,7 +69,8 @@ const router = createBrowserRouter([
     path: "/user",
     element: <UserDashboard />,
     children: [
-      { path: "/user/viewmenu", element: <Viewmenu /> }
+       { index: true, element: <UserViewmenu /> },
+      { path: "/user/viewmenu", element: <UserViewmenu /> }
     ]
   }
 ]);
