@@ -8,8 +8,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,5 +97,34 @@ public class MenuController {
 	public List<Menu> getAllMenu(){
 		return menuService.getAllMenu();
 	}
+	
+	// delete menu  to admin
+	@DeleteMapping("/deletemenu/{id}")
+	public ResponseEntity<?> deleteMenu(@PathVariable int id) {
+		menuService.deleteMenu(id);
+	    return ResponseEntity.ok().build();
+	}
+	
+	// update menu to admin
+	@PutMapping("/updatemenu/{id}")
+	public ResponseEntity<?> updateMenu(
+	        @PathVariable int id,
+	        @RequestParam String menuname,
+	        @RequestParam String description,
+	        @RequestParam double price,
+	        @RequestParam int categoryid,
+	        @RequestParam int subcategoryid,
+	        @RequestParam(required = false) MultipartFile image
+	) {
+	    try {
+	        menuService.updateMenu(id, menuname, description, price, categoryid, subcategoryid, image);
+	        return ResponseEntity.ok("Menu updated successfully");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.badRequest().body("Update failed");
+	    }
+	}
+
+
 
 }
