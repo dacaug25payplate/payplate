@@ -32,27 +32,32 @@ import com.payplate.menuservice.services.MenuService;
 public class MenuController {
 	@Autowired
 	MenuService menuService;
-	
+
 	@Autowired
 	MenuRepository mrepo;
 
-	//method to getall category
+	//endpoint to getall category
 	@GetMapping("/getAllCategory")
 	public List<Category> getAllCategory()
 	{
 		return menuService.getAllCategroy();
 	}
-	
-	
 
-	//method to get all subcategory
+
+
+	//endpint to get all subcategory
 	@GetMapping("/getAllSubCategory")
 	public List<SubCategory> getAllSubCategory()
 	{
 		return menuService.getAllSubCategory();
 	}
+	
 
+<<<<<<< HEAD
+	//endpoint for save menu
+=======
 	// Add menu to admin
+>>>>>>> b0c01b1949121124848cdb6f02dd4c7f7b161532
 	@PostMapping("/menu")
 	public ResponseEntity<String> saveMenu(
 			@RequestParam String menuname,

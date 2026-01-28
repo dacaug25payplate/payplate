@@ -1,3 +1,4 @@
+
 import React from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Login from "./pages/Login";
@@ -15,6 +16,7 @@ import Viewfeedback from "./pages/admin/viewfeedback";
 import StaffList from "./pages/admin/staffList";
 import StaffRegister from "./pages/admin/staffRegister";
 import AddMenu from "./pages/admin/AddMenu"
+import UserViewmenu from "./pages/user/UserViewMenu";
 
 const AuthLayoutWithNavbar = () => (
   <>
@@ -40,7 +42,7 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminDashboard />,
     children: [
-      // { index: true, element: <Dashboard /> }, 
+       { index: true, element: <Viewmenu /> }, 
       { path: "/admin/createStaff", element: <StaffList/> },
        { path: "/admin/addStaff", element: <StaffRegister/> },
        { path: "/admin/addmenu", element: <AddMenu /> },
@@ -67,7 +69,8 @@ const router = createBrowserRouter([
     path: "/user",
     element: <UserDashboard />,
     children: [
-      { path: "/user/viewmenu", element: <Viewmenu /> }
+       { index: true, element: <UserViewmenu /> },
+      { path: "/user/viewmenu", element: <UserViewmenu /> }
     ]
   }
 ]);

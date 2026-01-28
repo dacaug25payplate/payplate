@@ -54,6 +54,7 @@ public class MenuService {
         return subCategoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("SubCategory not found"));
     }
+    
 
     public void save(Menu menu) {
         menuRepository.save(menu); 
