@@ -60,6 +60,11 @@ public class UserService {
 	public void deleteStaff(int id) {
 		repo.deleteById(id);
 	}
+	
+	public boolean isUsernameExists(String username) {
+	    return repo.existsByUsername(username);
+	}
+
 
 }
 
