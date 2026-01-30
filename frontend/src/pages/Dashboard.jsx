@@ -1,13 +1,27 @@
-import { useSelector } from "react-redux";
+import { Outlet } from "react-router-dom";
+import Navbar from "../pages/Navbar";
 
-function Dashboard() {
-  const user = useSelector(state => state.user.user);
-
+function DashboardLayout() {
   return (
-    <div className="container text-center mt-5">
-      <h1 className="fw-bold">Welcome to dashboard {user?.role?.rolename}</h1>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+
+      {/* FIXED NAVBAR */}
+      <Navbar />
+
+      {/* SCROLLABLE CONTENT */}
+      <div
+        style={{
+          flex: 1,               // takes remaining height
+          overflowY: "auto",     // ONLY THIS SCROLLS
+          padding: "16px",
+          background: "#f8f9fa"
+        }}
+      >
+        <Outlet />
+      </div>
+
     </div>
   );
 }
 
-export default Dashboard;
+export default DashboardLayout;

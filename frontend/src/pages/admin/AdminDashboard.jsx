@@ -5,14 +5,16 @@ import SideNav from "./AdminLayout/sidenavbar";
 
 function AdminDashboard() {
   return (
-    <div className="d-flex flex-column vh-100">
+    <div className="vh-100 d-flex flex-column overflow-hidden">
       <Header />
 
-      <div className="d-flex flex-grow-1">
+      <div className="flex-grow-1 d-flex overflow-hidden">
         <SideNav />
-        <main className="flex-grow-1 p-4 bg-light">
+
+        <main className="flex-grow-1 p-4 bg-light overflow-auto">
           <Outlet />
         </main>
+
       </div>
 
       <Footer />
