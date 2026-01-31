@@ -15,21 +15,50 @@ function UserViewmenu() {
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
 
+  // ---------------- TABLE + ORDER STATE ----------------
+  const [tables, setTables] = useState([]);
+  const [selectedTableId, setSelectedTableId] = useState("");
+
+  const userId = 1;          // logged-in user (temporary)
+  const orderStatusId = 1;   // PLACED
+
+
   // ---------------- API CALLS ----------------
+  // ----------------- api call for get all category -------------
   useEffect(() => {
     axios.get("http://localhost:8081/api/getAllCategory")
       .then(res => setCategories(res.data));
   }, []);
 
+  // ----------------- api call for get all subcategory -------------
   useEffect(() => {
     axios.get("http://localhost:8081/api/getAllSubCategory")
       .then(res => setSubCategories(res.data));
   }, []);
 
+  // ----------- api call for getall menu-----------
   useEffect(() => {
     axios.get("http://localhost:8081/api/getAllMenu")
       .then(res => setMenuList(res.data));
   }, []);
+
+  // ---------- api call for getall table -----------
+  useEffect(() => {
+    axios.get("http://localhost:8081/api/servingTables")
+      .then(res => setTables(res.data))
+      .catch(err => console.error(err));
+  }, []);
+
+  // ---------- api call to table id ----------------
+  const occupyTable = async (tableId) => {
+    try {
+      await axios.put(
+        `http://localhost:8081/api/servingTable/${tableId}/occupy`
+      );
+    } catch (err) {
+      console.error("Failed to occupy table", err);
+    }
+  };
 
   // ---------------- SEARCH + FILTER ----------------
   const filteredMenu = menuList.filter(menu => {
@@ -96,6 +125,52 @@ function UserViewmenu() {
     cart.find(i => i.menuid === id)?.quantity || 0;
 
   const totalAmount = cart.reduce((sum, i) => sum + i.totalPrice, 0);
+
+
+  // ----- method to confirm order --------------
+  const confirmOrder = async () => {
+
+    if (!selectedTableId) {
+      alert("Please select a table");
+      return;
+    }
+
+    if (cart.length === 0) {
+      alert("Cart is empty");
+      return;
+    }
+
+    const orderData = {
+      userId: userId,
+      tableId: selectedTableId,
+      orderStatusId: orderStatusId,
+      items: cart.map(item => ({
+        menuId: item.menuid,
+        quantity: item.quantity,
+        price: item.price
+      }))
+    };
+
+    console.log("Order Sent:", orderData);
+
+    try {
+      await axios.post(
+        "http://localhost:8081/api/orders/confirm",
+        orderData
+      );
+
+      alert("Order placed successfully");
+
+      setCart([]);
+      setSelectedTableId("");
+      setShowCart(false);
+
+    } catch (err) {
+      console.error(err);
+      alert("Order failed ");
+    }
+  };
+
 
   // ---------------- UI ----------------
   return (
@@ -226,67 +301,260 @@ function UserViewmenu() {
         })}
       </div>
 
-      {/* CART POPUP */}
+      {/* FULL PAGE CART */}
       {showCart && (
-        <>
-          <div
-            onClick={() => setShowCart(false)}
-            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 999 }}
-          />
-
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "#fff",
+            zIndex: 1000,
+            display: "flex",
+            flexDirection: "column"
+          }}
+        >
+          {/* FIXED HEADER */}
           <div
             style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "420px",
-              background: "#fff",
-              borderRadius: "10px",
-              padding: "20px",
-              zIndex: 1000
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "#fff",
+              padding: "12px 16px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
             }}
           >
-            <div className="d-flex justify-content-between mb-3">
-              <h5>Your Cart</h5>
-              <button className="btn btn-sm btn-outline-danger" onClick={() => setShowCart(false)}>✕</button>
-            </div>
-
-            {cart.length === 0 && <p className="text-muted">Cart is empty</p>}
-
-            {cart.map(item => (
-              <div key={item.menuid} className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
-                <img src={`http://localhost:8081${item.imageUrl}`} alt={item.menuname}
-                  style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "8px" }} />
-
-                <div className="ms-3 flex-grow-1">
-                  <strong>{item.menuname}</strong>
-                  <div className="text-muted">₹ {item.price}</div>
-                  <div className="d-flex align-items-center mt-1">
-                    <button className="btn btn-sm btn-light fw-bold" onClick={() => decrease(item.menuid)}>−</button>
-                    <span className="px-2 fw-bold">{item.quantity}</span>
-                    <button className="btn btn-sm btn-light fw-bold" onClick={() => increase(item.menuid)}>+</button>
-                  </div>
-                </div>
-
-                <div className="text-end">
-                  <div className="fw-bold">₹ {item.totalPrice}</div>
-                  <button className="btn btn-sm text-danger p-0 mt-1" onClick={() => removeItem(item.menuid)}>
-                    <i className="bi bi-trash"></i>
-                  </button>
-                </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <i className="bi bi-cart-check-fill" style={{ fontSize: "20px" }}></i>
+              <div>
+                <h6 className="mb-0">Your Cart</h6>
+                <small style={{ opacity: 0.9, fontSize: "12px" }}>{cart.length} items</small>
               </div>
-            ))}
+            </div>
+            <button
+              className="btn btn-light btn-sm"
+              onClick={() => setShowCart(false)}
+              style={{ borderRadius: "20px", fontWeight: "bold", padding: "4px 12px" }}
+            >
+              <i className="bi bi-x-lg"></i>
+            </button>
+          </div>
 
-            {cart.length > 0 && (
+          {/* SCROLLABLE CONTENT */}
+          <div
+            style={{
+              flex: 1,
+              overflowY: "auto",
+              padding: "12px",
+              paddingBottom: "12px"
+            }}
+          >
+            {cart.length === 0 ? (
+              <div className="text-center mt-5">
+                <i className="bi bi-cart-x" style={{ fontSize: "60px", color: "#ccc" }}></i>
+                <p className="text-muted mt-3">Your cart is empty</p>
+                <button
+                  className="btn btn-primary mt-2"
+                  onClick={() => setShowCart(false)}
+                >
+                  Browse Menu
+                </button>
+              </div>
+            ) : (
               <>
-                <hr />
-                <h6>Total: ₹ {totalAmount}</h6>
-                <button className="btn btn-success w-100 mt-2">Confirm Order</button>
+                {cart.map((item, index) => (
+                  <div
+                    key={item.menuid}
+                    className="card mb-2 shadow-sm"
+                    style={{
+                      borderRadius: "10px",
+                      overflow: "hidden",
+                      border: "1px solid #e0e0e0"
+                    }}
+                  >
+                    <div className="card-body p-2">
+                      <div className="d-flex gap-2">
+                        {/* DISH IMAGE */}
+                        <img
+                          src={`http://localhost:8081${item.imageUrl}`}
+                          alt={item.menuname}
+                          style={{
+                            width: "70px",
+                            height: "70px",
+                            objectFit: "cover",
+                            borderRadius: "8px",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+                          }}
+                        />
+
+                        {/* DISH DETAILS */}
+                        <div className="flex-grow-1">
+                          <div className="d-flex justify-content-between align-items-start">
+                            <div>
+                              <h6 className="mb-0 fw-bold" style={{ fontSize: "14px" }}>{item.menuname}</h6>
+                              <p className="text-muted mb-1" style={{ fontSize: "12px" }}>
+                                ₹ {item.price} per item
+                              </p>
+                            </div>
+                            <button
+                              className="btn btn-sm btn-outline-danger p-1"
+                              onClick={() => removeItem(item.menuid)}
+                              style={{ 
+                                borderRadius: "50%", 
+                                width: "24px", 
+                                height: "24px",
+                                padding: 0,
+                                fontSize: "10px",
+                                lineHeight: 1
+                              }}
+                            >
+                              <i className="bi bi-trash"></i>
+                            </button>
+                          </div>
+
+                          {/* QUANTITY CONTROLS */}
+                          <div className="d-flex justify-content-between align-items-center mt-1">
+                            <div
+                              className="d-flex align-items-center border rounded"
+                              style={{
+                                background: "#f8f9fa",
+                                padding: "2px 6px",
+                                gap: "8px"
+                              }}
+                            >
+                              <button
+                                className="btn btn-sm btn-light fw-bold"
+                                onClick={() => decrease(item.menuid)}
+                                style={{
+                                  width: "22px",
+                                  height: "22px",
+                                  padding: 0,
+                                  borderRadius: "50%",
+                                  fontSize: "14px",
+                                  lineHeight: 1
+                                }}
+                              >
+                                −
+                              </button>
+                              <span className="fw-bold" style={{ fontSize: "14px", minWidth: "20px", textAlign: "center" }}>
+                                {item.quantity}
+                              </span>
+                              <button
+                                className="btn btn-sm btn-success fw-bold"
+                                onClick={() => increase(item.menuid)}
+                                style={{
+                                  width: "22px",
+                                  height: "22px",
+                                  padding: 0,
+                                  borderRadius: "50%",
+                                  fontSize: "14px",
+                                  lineHeight: 1
+                                }}
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            {/* TOTAL PRICE */}
+                            <div className="text-end">
+                              <h6 className="mb-0 fw-bold text-success" style={{ fontSize: "14px" }}>
+                                ₹ {item.totalPrice.toFixed(2)}
+                              </h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </>
             )}
           </div>
-        </>
+
+          {/* FIXED FOOTER - SIMPLE & COMPACT */}
+          {cart.length > 0 && (
+            <div
+              style={{
+                background: "#fff",
+                borderTop: "2px solid #e0e0e0",
+                padding: "12px 16px",
+                boxShadow: "0 -2px 8px rgba(0,0,0,0.1)"
+              }}
+            >
+              {/* TOTAL AMOUNT */}
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h6 className="mb-0">Total Amount:</h6>
+                <h5 className="mb-0 text-success fw-bold">₹ {totalAmount.toFixed(2)}</h5>
+              </div>
+
+              {/* TABLE SELECTION */}
+              <div className="mb-2">
+                <label className="fw-bold mb-1" style={{ fontSize: "13px" }}>
+                  <i className="bi bi-table me-1"></i>Select Table
+                </label>
+                <select
+                  className="form-select"
+                  value={selectedTableId}
+                  onChange={async (e) => {
+                    const id = e.target.value;
+                    setSelectedTableId(id);
+                    if (id) {
+                      await occupyTable(id);
+                    }
+                  }}
+                  style={{
+                    borderRadius: "6px",
+                    border: "1px solid #667eea",
+                    fontSize: "14px"
+                  }}
+                >
+                  <option value="">-- Select Available Table --</option>
+                  {tables
+                    .filter(t => t.status === "AVAILABLE")
+                    .map(t => (
+                      <option key={t.tableid} value={t.tableid}>
+                        Table {t.tableid}
+                      </option>
+                    ))}
+                </select>
+              </div>
+
+              {/* CONFIRM ORDER BUTTON */}
+              <button
+                className="btn btn-success w-100"
+                onClick={confirmOrder}
+                disabled={!selectedTableId}
+                style={{
+                  padding: "10px",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  borderRadius: "8px",
+                  background: selectedTableId 
+                    ? "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)" 
+                    : "#ccc",
+                  border: "none",
+                  boxShadow: selectedTableId ? "0 3px 12px rgba(17, 153, 142, 0.4)" : "none"
+                }}
+              >
+                {selectedTableId ? (
+                  <>
+                    <i className="bi bi-check-circle-fill me-2"></i>
+                    Confirm Order
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-exclamation-circle me-2"></i>
+                    Please Select a Table
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
       )}
 
     </div>
