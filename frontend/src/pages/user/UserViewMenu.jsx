@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+
 import axios from "axios";
 
 function UserViewmenu() {
@@ -19,9 +21,8 @@ function UserViewmenu() {
   const [tables, setTables] = useState([]);
   const [selectedTableId, setSelectedTableId] = useState("");
 
-  const userId = 1;          // logged-in user (temporary)
-  const orderStatusId = 1;   // PLACED
-
+  const loggedInUser = useSelector(state => state.user.user);
+  const userId = loggedInUser?.userid;
 
   // ---------------- API CALLS ----------------
   // ----------------- api call for get all category -------------
@@ -44,21 +45,10 @@ function UserViewmenu() {
 
   // ---------- api call for getall table -----------
   useEffect(() => {
-    axios.get("http://localhost:8081/api/servingTables")
+    axios.get("http://localhost:8082/orders/servingTables")
       .then(res => setTables(res.data))
       .catch(err => console.error(err));
   }, []);
-
-  // ---------- api call to table id ----------------
-  const occupyTable = async (tableId) => {
-    try {
-      await axios.put(
-        `http://localhost:8081/api/servingTable/${tableId}/occupy`
-      );
-    } catch (err) {
-      console.error("Failed to occupy table", err);
-    }
-  };
 
   // ---------------- SEARCH + FILTER ----------------
   const filteredMenu = menuList.filter(menu => {
@@ -130,6 +120,12 @@ function UserViewmenu() {
   // ----- method to confirm order --------------
   const confirmOrder = async () => {
 
+    if (!userId) {
+      alert("Please login again");
+      return;
+    }
+
+
     if (!selectedTableId) {
       alert("Please select a table");
       return;
@@ -141,25 +137,25 @@ function UserViewmenu() {
     }
 
     const orderData = {
-      userId: userId,
-      tableId: selectedTableId,
-      orderStatusId: orderStatusId,
-      items: cart.map(item => ({
-        menuId: item.menuid,
+      userid: userId,
+      tableid: selectedTableId,
+      orderItems: cart.map(item => ({
+        menuid: item.menuid,
         quantity: item.quantity,
-        price: item.price
+        totaldishprice: item.totalPrice
       }))
     };
 
-    console.log("Order Sent:", orderData);
+    console.log("Sending order:", orderData);
 
     try {
       await axios.post(
-        "http://localhost:8081/api/orders/confirm",
+        "http://localhost:8082/orders/confirm",
         orderData
       );
 
       alert("Order placed successfully");
+      //location.reload();
 
       setCart([]);
       setSelectedTableId("");
@@ -167,9 +163,10 @@ function UserViewmenu() {
 
     } catch (err) {
       console.error(err);
-      alert("Order failed ");
+      alert("Order failed");
     }
   };
+
 
 
   // ---------------- UI ----------------
@@ -403,9 +400,9 @@ function UserViewmenu() {
                             <button
                               className="btn btn-sm btn-outline-danger p-1"
                               onClick={() => removeItem(item.menuid)}
-                              style={{ 
-                                borderRadius: "50%", 
-                                width: "24px", 
+                              style={{
+                                borderRadius: "50%",
+                                width: "24px",
                                 height: "24px",
                                 padding: 0,
                                 fontSize: "10px",
@@ -499,27 +496,21 @@ function UserViewmenu() {
                 <select
                   className="form-select"
                   value={selectedTableId}
-                  onChange={async (e) => {
-                    const id = e.target.value;
-                    setSelectedTableId(id);
-                    if (id) {
-                      await occupyTable(id);
-                    }
-                  }}
-                  style={{
-                    borderRadius: "6px",
-                    border: "1px solid #667eea",
-                    fontSize: "14px"
-                  }}
+                  onChange={(e) => setSelectedTableId(Number(e.target.value))}
                 >
                   <option value="">-- Select Available Table --</option>
-                  {tables
-                    .filter(t => t.status === "AVAILABLE")
-                    .map(t => (
-                      <option key={t.tableid} value={t.tableid}>
-                        Table {t.tableid}
-                      </option>
-                    ))}
+
+                  {tables.filter(t => t.status?.toUpperCase() === "AVAILABLE").length === 0 ? (
+                    <option disabled>No tables available</option>
+                  ) : (
+                    tables
+                      .filter(t => t.status?.toUpperCase() === "AVAILABLE")
+                      .map(t => (
+                        <option key={t.tableid} value={t.tableid}>
+                          Table {t.tableid}
+                        </option>
+                      ))
+                  )}
                 </select>
               </div>
 
@@ -533,8 +524,8 @@ function UserViewmenu() {
                   fontSize: "16px",
                   fontWeight: "bold",
                   borderRadius: "8px",
-                  background: selectedTableId 
-                    ? "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)" 
+                  background: selectedTableId
+                    ? "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"
                     : "#ccc",
                   border: "none",
                   boxShadow: selectedTableId ? "0 3px 12px rgba(17, 153, 142, 0.4)" : "none"
