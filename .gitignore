@@ -84,3 +84,6 @@ Thumbs.db
 *.swp
 *.swo
 
+backend/OrderService/mvnw
+backend/OrderService/mvnw.cmd
+backend/OrderService/.mvn/wrapper/maven-wrapper.properties
