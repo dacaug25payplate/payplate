@@ -1,75 +1,147 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-
 function ForgetPassword() {
-
   const navigate = useNavigate();
-
 
   const [step, setStep] = useState(1);
   const [username, setUsername] = useState("");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
+
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [errors, setErrors] = useState({});
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  /* ================= PASSWORD RULES ================= */
+
+  const passwordRules = {
+    length: password.length >= 6 && password.length <= 12,
+    uppercase: /[A-Z]/.test(password),
+    number: /\d/.test(password),
+    special: /[@$!%*?&]/.test(password)
+  };
+
+  const isPasswordValid =
+    passwordRules.length &&
+    passwordRules.uppercase &&
+    passwordRules.number &&
+    passwordRules.special;
+
+  /* ================= STEP 1 ================= */
 
   const checkUsername = async () => {
     setErrors({});
-    if (username == "") {
+
+    if (!username.trim()) {
       setErrors({ username: "Username is required" });
       return;
     }
+
     try {
-      const res = await axios.get(`http://localhost:8080/api/user/forgot/${username}`);
-      if (res.data) {
-        setQuestion(res.data); // security question from API
-        setStep(2);
-      } else {
-        setErrors({ username: "User not found" });
-      }
+      const res = await axios.get(
+        `http://localhost:8080/api/user/forgot/${username}`
+      );
+      setQuestion(res.data);
+      setStep(2);
     } catch (error) {
-      // setErrors({ username: "User not found" });
-      alert("User not found");
+      if (!error.response) {
+        // backend not running
+        setErrors({ username: "Something went wrong. Please try again later." });
+      } else if (error.response.status === 404) {
+        setErrors({ username: "User not found" });
+      } else {
+        setErrors({ username: "Something went wrong" });
+      }
     }
   };
 
+
+  /* ================= STEP 2 ================= */
+
   const verify = async () => {
-    const res = await axios.post("http://localhost:8080/api/user/verify", { username, answer });
-    res.data ? setStep(3) : alert("Wrong answer");
+    if (!answer.trim()) {
+      setErrors({ answer: "Answer is required" });
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:8080/api/user/verify",
+        { username, answer }
+      );
+
+      res.data ? setStep(3) : setErrors({ answer: "Wrong answer" });
+
+    } catch (error) {
+      if (!error.response) {
+        setErrors({ answer: "Something went wrong. Please try again later." });
+      } else {
+        setErrors({ answer: "Wrong answer" });
+      }
+    }
   };
 
+
+  /* ================= STEP 3 ================= */
+
   const update = async () => {
-    await axios.post("http://localhost:8080/api/user/update", { username, password });
-    alert("Password updated");
-    setStep(1);
-    navigate("/");
+    let newErrors = {};
+
+    if (!password) {
+      newErrors.password = "Password is required";
+    } else if (!isPasswordValid) {
+      newErrors.password = "Password does not meet requirements";
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Confirm password is required";
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    try {
+      await axios.post("http://localhost:8080/api/user/update", {
+        username,
+        password
+      });
+
+      alert("Password updated successfully");
+      navigate("/");
+
+    } catch (error) {
+      alert("Something went wrong. Please try again later.");
+    }
   };
+
+
+  /* ================= UI ================= */
 
   return (
     <div className="container">
       <div className="row justify-content-center align-items-center min-vh-100">
         <div className="col-md-4">
           <div className="card shadow p-4">
-            <h4 className="text-center">Forgot Password</h4>
 
+            <h4 className="text-center mb-3">Forgot Password</h4>
+
+            {/* STEP 1 */}
             {step === 1 && (
-              <div>
-                <label htmlFor="username" className="form-label">
-                  Username
-                </label>
+              <>
+                <label className="form-label">Username</label>
                 <input
-                  id="username"
-                  type="text"
-                  className={`form-control mb-2 ${errors.username ? "is-invalid" : ""}`}
-                  placeholder="Enter your username"
+                  className={`form-control ${errors.username ? "is-invalid" : ""}`}
                   value={username}
-                  onChange={(e) => {
+                  onChange={e => {
                     setUsername(e.target.value);
-                    setErrors({}); // clear error on typing
+                    setErrors({});
                   }}
                 />
                 {errors.username && (
@@ -78,29 +150,24 @@ function ForgetPassword() {
                   </div>
                 )}
 
-                <button
-                  className="btn btn-primary w-100 mt-3"
-                  onClick={checkUsername}
-                >
+                <button className="btn btn-primary w-100 mt-3" onClick={checkUsername}>
                   Next
                 </button>
-              </div>
+              </>
             )}
 
+            {/* STEP 2 */}
             {step === 2 && (
-              <div>
-                <p><b>{question}</b></p>
+              <>
+                <p className="fw-bold">{question}</p>
 
-                <label htmlFor="answer" className="form-label">Answer</label>
+                <label className="form-label">Answer</label>
                 <input
-                  id="answer"
-                  type="text"
-                  className={`form-control mb-2 ${errors.answer ? "is-invalid" : ""}`}
-                  placeholder="Enter your answer"
+                  className={`form-control ${errors.answer ? "is-invalid" : ""}`}
                   value={answer}
-                  onChange={(e) => {
+                  onChange={e => {
                     setAnswer(e.target.value);
-                    setErrors({ ...errors, answer: null }); // clear answer error on typing
+                    setErrors({});
                   }}
                 />
                 {errors.answer && (
@@ -109,32 +176,80 @@ function ForgetPassword() {
                   </div>
                 )}
 
-                <button
-                  className="btn btn-primary w-100 mt-2"
-                  onClick={() => {
-                    // Reset previous errors
-                    setErrors({ ...errors, answer: null });
-
-                    // Validation: answer required
-                    if (!answer.trim()) {
-                      setErrors({ ...errors, answer: "Answer is required" });
-                      return;
-                    }
-
-                    // Call verify function if valid
-                    verify();
-                  }}
-                >
+                <button className="btn btn-primary w-100 mt-3" onClick={verify}>
                   Verify
                 </button>
-              </div>
+              </>
             )}
 
+            {/* STEP 3 */}
             {step === 3 && (
               <>
-                <input className="form-control mb-3" placeholder="New Password"
-                  onChange={e => setPassword(e.target.value)} />
-                <button className="btn btn-success w-100" onClick={update}>Update</button>
+                <label className="form-label">New Password</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="form-control"
+                  maxLength={12}
+                  value={password}
+                  onChange={e => {
+                    setPassword(e.target.value);
+                    setPasswordTouched(true);
+                  }}
+                />
+
+                {/* Password Rules */}
+                {passwordTouched && !isPasswordValid && (
+                  <div className="small mt-2">
+                    <div className={passwordRules.length ? "text-success" : "text-danger"}>
+                      {passwordRules.length ? "✔" : "✖"} 6–12 characters
+                    </div>
+                    <div className={passwordRules.uppercase ? "text-success" : "text-danger"}>
+                      {passwordRules.uppercase ? "✔" : "✖"} One uppercase letter
+                    </div>
+                    <div className={passwordRules.number ? "text-success" : "text-danger"}>
+                      {passwordRules.number ? "✔" : "✖"} One number
+                    </div>
+                    <div className={passwordRules.special ? "text-success" : "text-danger"}>
+                      {passwordRules.special ? "✔" : "✖"} One special character
+                    </div>
+                  </div>
+                )}
+
+                <label className="form-label mt-3">Confirm Password</label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="form-control"
+                  maxLength={12}
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                />
+
+                {errors.confirmPassword && (
+                  <small className="text-danger">{errors.confirmPassword}</small>
+                )}
+
+                {/* Show password */}
+                <div className="form-check mt-2">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    checked={showPassword}
+                    onChange={e => setShowPassword(e.target.checked)}
+                  />
+                  <label className="form-check-label small">
+                    Show password
+                  </label>
+                </div>
+
+                {errors.password && (
+                  <small className="text-danger d-block mt-1">
+                    {errors.password}
+                  </small>
+                )}
+
+                <button className="btn btn-success w-100 mt-3" onClick={update}>
+                  Update Password
+                </button>
               </>
             )}
 

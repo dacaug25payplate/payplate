@@ -3,14 +3,16 @@ import axios from "axios";
 
 function AddMenu() {
 
-  const [form, setForm] = useState({
-    menuname: "",
-    price: "",
-    description: "",
-    categoryid: "",
-    subcategoryid: "",
-    image: null
-  });
+  const initialForm = {
+  menuname: "",
+  price: "",
+  description: "",
+  categoryid: "",
+  subcategoryid: "",
+  image: null
+};
+
+  const [form, setForm] = useState(initialForm);
 
   const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
@@ -81,10 +83,17 @@ function AddMenu() {
 
     try {
       await axios.post("http://localhost:8081/api/menu", formData);
+
+      setForm(initialForm);
+      setErrors({});
+
+      document.querySelector('input[type="file"]').value = "";
+
       alert("Menu added successfully");
     } catch {
       alert("Failed to add menu");
     }
+
   };
 
   return (
