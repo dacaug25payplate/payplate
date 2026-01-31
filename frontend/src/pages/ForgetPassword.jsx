@@ -36,6 +36,7 @@ function ForgetPassword() {
 
   const checkUsername = async () => {
     setErrors({});
+
     if (!username.trim()) {
       setErrors({ username: "Username is required" });
       return;
@@ -47,10 +48,18 @@ function ForgetPassword() {
       );
       setQuestion(res.data);
       setStep(2);
-    } catch {
-      setErrors({ username: "User not found" });
+    } catch (error) {
+      if (!error.response) {
+        // backend not running
+        setErrors({ username: "Something went wrong. Please try again later." });
+      } else if (error.response.status === 404) {
+        setErrors({ username: "User not found" });
+      } else {
+        setErrors({ username: "Something went wrong" });
+      }
     }
   };
+
 
   /* ================= STEP 2 ================= */
 
@@ -60,13 +69,23 @@ function ForgetPassword() {
       return;
     }
 
-    const res = await axios.post(
-      "http://localhost:8080/api/user/verify",
-      { username, answer }
-    );
+    try {
+      const res = await axios.post(
+        "http://localhost:8080/api/user/verify",
+        { username, answer }
+      );
 
-    res.data ? setStep(3) : setErrors({ answer: "Wrong answer" });
+      res.data ? setStep(3) : setErrors({ answer: "Wrong answer" });
+
+    } catch (error) {
+      if (!error.response) {
+        setErrors({ answer: "Something went wrong. Please try again later." });
+      } else {
+        setErrors({ answer: "Wrong answer" });
+      }
+    }
   };
+
 
   /* ================= STEP 3 ================= */
 
@@ -88,14 +107,20 @@ function ForgetPassword() {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    await axios.post("http://localhost:8080/api/user/update", {
-      username,
-      password
-    });
+    try {
+      await axios.post("http://localhost:8080/api/user/update", {
+        username,
+        password
+      });
 
-    alert("Password updated successfully");
-    navigate("/");
+      alert("Password updated successfully");
+      navigate("/");
+
+    } catch (error) {
+      alert("Something went wrong. Please try again later.");
+    }
   };
+
 
   /* ================= UI ================= */
 
