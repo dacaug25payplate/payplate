@@ -101,6 +101,13 @@ public class UserController {
     	return ResponseEntity.ok("Deleted successfully");
     }
     
+    //
+    @GetMapping("/check-username")
+    public ResponseEntity<Boolean> checkUsername(@RequestParam String username) {
+        boolean exists = service.isUsernameExists(username);
+        return ResponseEntity.ok(exists);
+    }
+
 }
 
 
