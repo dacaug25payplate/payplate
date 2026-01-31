@@ -12,7 +12,11 @@
 	<artifactId>OrderService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>OrderService</name>
+<<<<<<< HEAD
 	<description>SpringBoot Order Service</description>
+=======
+	<description>Demo project for Spring Boot</description>
+>>>>>>> 830d3b5fc5925e8a089516352d4491b8aa499563
 	<url/>
 	<licenses>
 		<license/>
@@ -28,6 +32,10 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+<<<<<<< HEAD
+=======
+		<spring-cloud.version>2025.1.0</spring-cloud.version>
+>>>>>>> 830d3b5fc5925e8a089516352d4491b8aa499563
 	</properties>
 	<dependencies>
 		<dependency>
@@ -61,6 +69,20 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+<<<<<<< HEAD
+=======
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+>>>>>>> 830d3b5fc5925e8a089516352d4491b8aa499563
 
 	<build>
 		<plugins>
