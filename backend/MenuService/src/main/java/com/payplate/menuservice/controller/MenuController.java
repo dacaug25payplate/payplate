@@ -53,11 +53,6 @@ public class MenuController {
 	}
 	
 
-<<<<<<< HEAD
-	//endpoint for save menu
-=======
-	// Add menu to admin
->>>>>>> b0c01b1949121124848cdb6f02dd4c7f7b161532
 	@PostMapping("/menu")
 	public ResponseEntity<String> saveMenu(
 			@RequestParam String menuname,
