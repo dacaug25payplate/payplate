@@ -1,1 +1,66 @@
-/.metadata/
+# =========================
+# .NET build outputs
+# =========================
+bin/
+obj/
+
+# =========================
+# User-specific files
+# =========================
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Visual Studio
+# =========================
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# =========================
+# Rider / JetBrains
+# =========================
+.idea/
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Secrets & config
+# =========================
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Local.json
+secrets.json
+
+# =========================
+# EF Core
+# =========================
+Migrations/
+
+# =========================
+# Node (if ever used)
+# =========================
+node_modules/
+
+# =========================
+# Test results
+# =========================
+TestResults/
+
+# =========================
+# Coverage
+# =========================
+coverage/
