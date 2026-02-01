@@ -107,6 +107,15 @@ public class UserController {
         boolean exists = service.isUsernameExists(username);
         return ResponseEntity.ok(exists);
     }
+    
+    @GetMapping("/getusername/{id}")
+    public ResponseEntity<String> getUsername(@PathVariable int id) {
+
+        String username = service.getUsernameById(id);
+
+        return ResponseEntity.ok(username);
+    }
+
 
 }
 
