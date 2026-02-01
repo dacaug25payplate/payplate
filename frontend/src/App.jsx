@@ -17,6 +17,8 @@ import StaffList from "./pages/admin/staffList";
 import StaffRegister from "./pages/admin/staffRegister";
 import AddMenu from "./pages/admin/AddMenu"
 import UserViewmenu from "./pages/user/UserViewMenu";
+import ViewOrder from "./pages/cook/ViewOrder";
+import UserViewOrder from "./pages/user/UserViewOrder";
 
 const AuthLayoutWithNavbar = () => (
   <div
@@ -70,7 +72,7 @@ const router = createBrowserRouter([
     path: "/cook",
     element: <CookDashboard />,
     children: [
-      { path: "/cook/viewmenu", element: <Viewmenu /> }
+      { path: "/cook/vieworder", element: <ViewOrder /> }
     ]
   },
   {
@@ -85,6 +87,7 @@ const router = createBrowserRouter([
     element: <UserDashboard />,
     children: [
        { index: true, element: <UserViewmenu /> },
+       {path : "/user/vieworder",element : <UserViewOrder/>},
       { path: "/user/viewmenu", element: <UserViewmenu /> }
     ]
   }
