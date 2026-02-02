@@ -13,6 +13,15 @@ namespace BillingService.Services
 
         public Bill GenerateBill(int orderId, double billAmount)
         {
+            // ❗ Prevent duplicate bill
+            var existingBill = _context.Bills
+                .FirstOrDefault(b => b.Orderid == orderId);
+
+            if (existingBill != null)
+            {
+                throw new InvalidOperationException("Bill already generated for this order");
+            }
+
             DateTime now = DateTime.Now;
 
             // 1️⃣ Calculate tax (5%)
@@ -28,13 +37,13 @@ namespace BillingService.Services
                 .OrderByDescending(d => d.MinAmt)
                 .FirstOrDefault();
 
-            double discountValue =discount != null ? (billAmount * discount.Discount1 / 100) : 0;
+            double discountValue =
+                discount != null ? (billAmount * discount.Discount1 / 100) : 0;
 
-
-            // 3️⃣ Calculate net amount
+            // 3️⃣ Net amount
             double netAmount = billAmount + tax - discountValue;
 
-            // 4️⃣ Create Bill entity (MATCHES MODEL EXACTLY)
+            // 4️⃣ Create bill
             var bill = new Bill
             {
                 Orderid = orderId,
@@ -46,11 +55,21 @@ namespace BillingService.Services
                 Paymentstatus = "UNPAID"
             };
 
-            // 5️⃣ Save bill
             _context.Bills.Add(bill);
             _context.SaveChanges();
 
             return bill;
+        }
+
+         public Dictionary<int, string> GetPaymentStatusMap()
+        {
+            return _context.Bills
+                .GroupBy(b => b.Orderid)
+                .Select(g => g.OrderByDescending(b => b.Billid).First())
+                .ToDictionary(
+                    b => b.Orderid,
+                    b => b.Paymentstatus
+                );
         }
     }
 }

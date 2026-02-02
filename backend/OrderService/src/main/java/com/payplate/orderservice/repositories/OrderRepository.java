@@ -16,12 +16,13 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
 			  o.tableid,
 			  os.statusname,
 			  m.menuname,
-			  oi.quantity
+			  oi.quantity,
+			  o.totalamount
 			from orders o
 			join orderstatus os on o.orderstatusid = os.orderstatusid
 			join orderitem oi on o.orderid = oi.orderid
 			join menu m on oi.menuid = m.menuid
-			where os.statusname in ('PENDING','IN_PREPARATION','READY')
+			where os.statusname in ('PENDING','IN_PREPARATION','READY','DELIVERED')
 			order by o.orderdatetime desc
 			""", nativeQuery = true)
 	List<Object[]> getKitchenOrders();

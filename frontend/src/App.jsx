@@ -19,6 +19,7 @@ import AddMenu from "./pages/admin/AddMenu"
 import UserViewmenu from "./pages/user/UserViewMenu";
 import ViewOrder from "./pages/cook/ViewOrder";
 import UserViewOrder from "./pages/user/UserViewOrder";
+import AdminViewOrders from "./pages/admin/AdminViewOrders";
 
 const AuthLayoutWithNavbar = () => (
   <div
@@ -66,6 +67,7 @@ const router = createBrowserRouter([
       { path: "/admin/viewmenu", element: <Viewmenu/> },
       { path: "/admin/adddiscount", element: <AddDiscount /> },
       { path: "/admin/viewfeedbacks", element: <AdminViewFeedbacks /> },
+      { path: "/admin/vieworders", element: <AdminViewOrders /> },
     ]
   },
   {

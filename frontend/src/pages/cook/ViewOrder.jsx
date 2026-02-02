@@ -21,7 +21,7 @@ function ViewOrder() {
 
     // FIFO + hide READY orders
     const queuedOrders = res.data
-      .filter(o => o.status !== "READY")
+      .filter(o => o.status !== "READY" && o.status !== "DELIVERED")
       .sort((a, b) => a.orderId - b.orderId);
 
     setOrders(queuedOrders);

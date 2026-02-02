@@ -1,85 +1,119 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 function AdminViewOrders() {
 
   const [orders, setOrders] = useState([]);
-  const [statuses, setStatuses] = useState([]);
+  const [paymentStatusMap, setPaymentStatusMap] = useState({});
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [selectedStatusId, setSelectedStatusId] = useState("");
+
+  const intervalRef = useRef(null);
+
+  const STATUS_PRIORITY = {
+    DELIVERED: 1,
+    READY: 2,
+    IN_PREPARATION: 3,
+    PENDING: 4
+  };
 
   useEffect(() => {
-    fetchOrders();
-    fetchStatuses();
+    loadData();
+
+    intervalRef.current = setInterval(loadData, 5000);
+    return () => clearInterval(intervalRef.current);
   }, []);
+
+  // ---------------- LOAD DATA ----------------
+  const loadData = async () => {
+    await Promise.all([
+      fetchOrders(),
+      fetchPaymentStatuses()
+    ]);
+  };
 
   // ---------------- API CALLS ----------------
   const fetchOrders = async () => {
     const res = await axios.get("http://localhost:8082/orders/kitchen");
-    setOrders(res.data);
+    setOrders(sortOrders(res.data));
   };
 
-  const fetchStatuses = async () => {
-    const res = await axios.get("http://localhost:8082/orders/getAllOrderStatus");
-    setStatuses(res.data);
-  };
-
-  const updateStatus = async () => {
-    await axios.put(
-      `http://localhost:8082/orders/${selectedOrder.orderId}/status`,
-      { orderstatusid: selectedStatusId }
+  const fetchPaymentStatuses = async () => {
+    const res = await axios.get(
+      "http://localhost:5290/api/billing/status-map"
     );
-    setSelectedOrder(null);
-    fetchOrders();
+    setPaymentStatusMap(res.data);
+  };
+
+  const generateBill = async (order) => {
+    try {
+      await axios.post(
+        "http://localhost:5290/api/billing/generate",
+        null,
+        {
+          params: {
+            orderId: order.orderId,
+            billAmount: order.totalamount // ⚠ backend field name
+          }
+        }
+      );
+
+      alert(`Bill generated for Order #${order.orderId}`);
+      setSelectedOrder(null);
+      fetchPaymentStatuses();
+
+    } catch (err) {
+      alert(err.response?.data || "Failed to generate bill");
+    }
   };
 
   // ---------------- HELPERS ----------------
-  const getStatusName = (orderstatusid) => {
-    const found = statuses.find(
-      s => s.orderstatusid === orderstatusid
+  const sortOrders = (list) =>
+    [...list].sort(
+      (a, b) =>
+        (STATUS_PRIORITY[a.status] || 99) -
+        (STATUS_PRIORITY[b.status] || 99)
     );
-    return found ? found.statusname : "PENDING";
-  };
 
   const getBadgeClass = (status) => {
     switch (status) {
-      case "PENDING": return "bg-warning";
-      case "IN_PREPARATION": return "bg-primary";
-      case "READY": return "bg-success";
       case "DELIVERED": return "bg-dark";
+      case "READY": return "bg-success";
+      case "IN_PREPARATION": return "bg-primary";
+      case "PENDING": return "bg-warning";
       default: return "bg-secondary";
     }
   };
 
+  // ---------------- UI ----------------
   return (
     <div className="container mt-4">
+      <h4 className="mb-4">📦 Orders Overview</h4>
 
-      <h4 className="mb-4">🍳 Kitchen Orders</h4>
-
-      {/* ORDER CARDS */}
       <div className="row">
         {orders.map(order => {
-          const statusName = getStatusName(order.orderstatusid);
+
+          const paymentStatus = paymentStatusMap[order.orderId];
+          // undefined | "UNPAID" | "PAID"
+
+          const isVisibleToAdmin = paymentStatus !== "PAID";
+          if (!isVisibleToAdmin) return null;
 
           return (
             <div key={order.orderId} className="col-md-3 mb-4">
               <div
                 className="card shadow-sm h-100"
-                style={{ cursor: "pointer", borderRadius: "14px" }}
-                onClick={() => {
-                  setSelectedOrder(order);
-                  setSelectedStatusId(order.orderstatusid);
-                }}
+                style={{ borderRadius: "14px", cursor: "pointer" }}
+                onClick={() => setSelectedOrder(order)}
               >
                 <div className="card-body">
                   <h6 className="fw-bold">Table {order.tableId}</h6>
                   <p className="mb-1">Order #{order.orderId}</p>
 
-                  <span className={`badge ${getBadgeClass(statusName)}`}>
-                    {statusName}
+                  <span className={`badge ${getBadgeClass(order.status)}`}>
+                    {order.status}
                   </span>
 
-                  <p className="text-muted mt-2 mb-0">
+                  <p className="text-muted mt-2">
                     {order.items?.length || 0} items
                   </p>
                 </div>
@@ -90,101 +124,57 @@ function AdminViewOrders() {
       </div>
 
       {/* MODAL */}
-      {selectedOrder && (
-        <div
-          className="modal show fade d-block"
-          style={{ background: "rgba(0,0,0,0.6)" }}
-        >
-          <div className="modal-dialog modal-lg modal-dialog-centered">
-            <div className="modal-content">
+      {selectedOrder && (() => {
 
-              {/* HEADER */}
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  Order #{selectedOrder.orderId} | Table {selectedOrder.tableId}
-                </h5>
-                <button
-                  className="btn-close"
-                  onClick={() => setSelectedOrder(null)}
-                ></button>
-              </div>
+        const paymentStatus = paymentStatusMap[selectedOrder.orderId];
+        const showGenerateButton = selectedOrder.status === "DELIVERED";
+        const enableGenerateButton = paymentStatus === undefined;
 
-              {/* BODY */}
-              <div className="modal-body">
-                {selectedOrder.items.map((item, i) => (
-                  <div
-                    key={i}
-                    className="d-flex align-items-center border-bottom pb-3 mb-3"
-                  >
-                    <img
-                      src={
-                        item.imageUrl
-                          ? `http://localhost:8081${item.imageUrl}`
-                          : "https://via.placeholder.com/80"
-                      }
-                      alt={item.menuName}
-                      style={{
-                        width: "80px",
-                        height: "80px",
-                        objectFit: "cover",
-                        borderRadius: "10px"
-                      }}
-                    />
+        return (
+          <div className="modal show fade d-block"
+            style={{ background: "rgba(0,0,0,0.6)" }}>
+            <div className="modal-dialog modal-lg modal-dialog-centered">
+              <div className="modal-content">
 
-                    <div className="ms-3 flex-grow-1">
-                      <h6 className="mb-1">{item.menuName}</h6>
-                      <span className="fw-bold">
-                        Quantity: {item.quantity}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* FOOTER */}
-              <div className="modal-footer justify-content-between">
-
-                {/* STATUS DROPDOWN */}
-                <select
-                  className="form-select w-50"
-                  value={selectedStatusId}
-                  onChange={(e) =>
-                    setSelectedStatusId(Number(e.target.value))
-                  }
-                >
-                  {statuses.map(s => (
-                    <option
-                      key={s.orderstatusid}
-                      value={s.orderstatusid}
-                    >
-                      {s.statusname}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="d-flex gap-2">
+                <div className="modal-header">
+                  <h5 className="modal-title">
+                    Order #{selectedOrder.orderId} | Table {selectedOrder.tableId}
+                  </h5>
                   <button
-                    className="btn btn-secondary"
+                    className="btn-close"
                     onClick={() => setSelectedOrder(null)}
-                  >
-                    Cancel
-                  </button>
+                  />
+                </div>
 
-                  <button
-                    className="btn btn-success"
-                    onClick={updateStatus}
-                  >
-                    Update Status
-                  </button>
+                <div className="modal-body">
+                  {selectedOrder.items.map((item, i) => (
+                    <div key={i}
+                      className="d-flex justify-content-between border-bottom pb-2 mb-2">
+                      <span>{item.menuName}</span>
+                      <span>Qty: {item.quantity}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="modal-footer">
+                  {showGenerateButton && (
+                    <button
+                      className="btn btn-success w-100"
+                      disabled={!enableGenerateButton}
+                      onClick={() => generateBill(selectedOrder)}
+                    >
+                      {paymentStatus === "UNPAID"
+                        ? "Waiting for Payment"
+                        : "Generate Bill"}
+                    </button>
+                  )}
                 </div>
 
               </div>
-
             </div>
           </div>
-        </div>
-      )}
-
+        );
+      })()}
     </div>
   );
 }

@@ -89,6 +89,7 @@ public class OrderService {
 			order.putIfAbsent("orderId", orderId);
 			order.putIfAbsent("tableId", r[1]);
 			order.putIfAbsent("status", r[2]);
+			order.putIfAbsent("totalAmount", r[5]);
 			order.putIfAbsent("items", new ArrayList<>());
 
 			List<Map<String, Object>> items =
