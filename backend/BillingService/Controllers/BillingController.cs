@@ -15,9 +15,7 @@ namespace BillingService.Controllers
         }
 
         [HttpPost("generate")]
-        public IActionResult GenerateBill(
-            [FromQuery] int orderId,
-            [FromQuery] double billAmount)
+        public IActionResult GenerateBill([FromQuery] int orderId, [FromQuery] double billAmount)
         {
             try
             {
