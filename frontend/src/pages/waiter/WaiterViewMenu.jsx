@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import OrderList from "./OrderList";
 
-function Viewmenu() {
+function WaiterViewMenu() {
   const [menuList, setMenuList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
@@ -41,49 +42,52 @@ function Viewmenu() {
   });
 
   const handleDelete = async (menuid) => {
-  const confirmDelete = window.confirm("Are you sure you want to delete this menu?");
+    const confirmDelete = window.confirm("Are you sure you want to delete this menu?");
 
-  if (!confirmDelete) return;
+    if (!confirmDelete) return;
 
-  try {
-    await axios.delete(`http://localhost:8081/api/deletemenu/${menuid}`);
+    try {
+      await axios.delete(`http://localhost:8081/api/deletemenu/${menuid}`);
 
-    setMenuList(prev => prev.filter(menu => menu.menuid !== menuid));
+      setMenuList(prev => prev.filter(menu => menu.menuid !== menuid));
 
-    alert("Menu deleted successfully");
-  } catch (error) {
-    console.error(error);
-    alert("Failed to delete menu");
-  }
-};
+      toastr.success("Menu deleted successfully");
+    } catch (error) {
+      console.error(error);
+      toastr.error("Failed to delete menu");
+    }
+  };
 
-const handleUpdate = async () => {
-  const formData = new FormData();
+  const handleUpdate = async () => {
+    const formData = new FormData();
 
-  formData.append("menuname", editingMenu.menuname);
-  formData.append("description", editingMenu.description);
-  formData.append("price", editingMenu.price);
-  formData.append("categoryid", editingMenu.category.categoryid);
-  formData.append("subcategoryid", editingMenu.subCategory.subcategoryid);
+    formData.append("menuname", editingMenu.menuname);
+    formData.append("description", editingMenu.description);
+    formData.append("price", editingMenu.price);
+    formData.append("categoryid", editingMenu.category.categoryid);
+    formData.append("subcategoryid", editingMenu.subCategory.subcategoryid);
 
-  if (editingMenu.newImage) {
-    formData.append("image", editingMenu.newImage);
-  }
+    if (editingMenu.newImage) {
+      formData.append("image", editingMenu.newImage);
+    }
 
-  try {
-    await axios.put(`http://localhost:8081/api/updatemenu/${editingMenu.menuid}`, formData);
+    try {
+      await axios.put(`http://localhost:8081/api/updatemenu/${editingMenu.menuid}`, formData);
 
-    alert("Menu updated");
+      toastr.success("Menu updated");
 
-    // Refresh list
-    const res = await axios.get("http://localhost:8081/api/getAllMenu");
-    setMenuList(res.data);
+      // Refresh list
+      const res = await axios.get("http://localhost:8081/api/getAllMenu");
+      setMenuList(res.data);
 
-    setEditingMenu(null);
-  } catch {
-    alert("Update failed");
-  }
-};
+      setEditingMenu(null);
+    } catch {
+      toastr.error("Update failed");
+    }
+  };
+
+
+
   return (
     <div>
       <h4 className="mb-3">Menu Management</h4>
@@ -158,7 +162,7 @@ const handleUpdate = async () => {
                 <span className={`badge ${menu.category.categoryid === 1 ? "bg-success" : "bg-danger"}`}>
                   {menu.category.categoryname}
                 </span>
-                
+
                 <div className="d-flex gap-2 mt-3">
                   <button
                     className="btn btn-sm btn-outline-primary flex-fill"
@@ -174,11 +178,11 @@ const handleUpdate = async () => {
                     Delete
                   </button>
                 </div>
-                </div>
-
               </div>
 
             </div>
+
+          </div>
         ))}
 
         {filteredMenu.length === 0 && (
@@ -187,74 +191,74 @@ const handleUpdate = async () => {
       </div>
 
       {/* MODAL */}
-{editingMenu && (
-  <div className="modal show fade d-block" tabIndex="-1" style={{ background: "rgba(0,0,0,0.5)" }}>
-    <div className="modal-dialog modal-lg modal-dialog-centered">
-      <div className="modal-content">
+      {editingMenu && (
+        <div className="modal show fade d-block" tabIndex="-1" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content">
 
-        <div className="modal-header">
-          <h5 className="modal-title">Update Menu</h5>
-          <button className="btn-close" onClick={() => setEditingMenu(null)}></button>
-        </div>
+              <div className="modal-header">
+                <h5 className="modal-title">Update Menu</h5>
+                <button className="btn-close" onClick={() => setEditingMenu(null)}></button>
+              </div>
 
-        <div className="modal-body">
-          <div className="row g-3">
+              <div className="modal-body">
+                <div className="row g-3">
 
-            <div className="col-md-6">
-              <input
-                className="form-control"
-                placeholder="Menu name"
-                value={editingMenu.menuname}
-                onChange={e => setEditingMenu({...editingMenu, menuname: e.target.value})}
-              />
+                  <div className="col-md-6">
+                    <input
+                      className="form-control"
+                      placeholder="Menu name"
+                      value={editingMenu.menuname}
+                      onChange={e => setEditingMenu({ ...editingMenu, menuname: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <input
+                      className="form-control"
+                      placeholder="Price"
+                      value={editingMenu.price}
+                      onChange={e => setEditingMenu({ ...editingMenu, price: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-12">
+                    <textarea
+                      className="form-control"
+                      placeholder="Description"
+                      value={editingMenu.description}
+                      onChange={e => setEditingMenu({ ...editingMenu, description: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="col-12">
+                    <input
+                      type="file"
+                      className="form-control"
+                      onChange={e => setEditingMenu({ ...editingMenu, newImage: e.target.files[0] })}
+                    />
+                  </div>
+
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setEditingMenu(null)}>
+                  Cancel
+                </button>
+
+                <button className="btn btn-success" onClick={handleUpdate}>
+                  Save Changes
+                </button>
+              </div>
+
             </div>
-
-            <div className="col-md-6">
-              <input
-                className="form-control"
-                placeholder="Price"
-                value={editingMenu.price}
-                onChange={e => setEditingMenu({...editingMenu, price: e.target.value})}
-              />
-            </div>
-
-            <div className="col-12">
-              <textarea
-                className="form-control"
-                placeholder="Description"
-                value={editingMenu.description}
-                onChange={e => setEditingMenu({...editingMenu, description: e.target.value})}
-              />
-            </div>
-
-            <div className="col-12">
-              <input
-                type="file"
-                className="form-control"
-                onChange={e => setEditingMenu({...editingMenu, newImage: e.target.files[0]})}
-              />
-            </div>
-
           </div>
         </div>
-
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={() => setEditingMenu(null)}>
-            Cancel
-          </button>
-
-          <button className="btn btn-success" onClick={handleUpdate}>
-            Save Changes
-          </button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
     </div>
   );
 }
 
-export default Viewmenu;
+export default WaiterViewMenu;

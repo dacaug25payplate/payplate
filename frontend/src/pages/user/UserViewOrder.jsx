@@ -110,6 +110,12 @@ function UserOrders() {
   // ================= UPDATE ORDER =================
   const updateOrder = async () => {
 
+    // ✅ ADD THIS BLOCK (NEW FUNCTIONALITY)
+    if (activeOrder.statusname === "DELIVERED") {
+      alert("Order already delivered. Update not allowed.");
+      return;
+    }
+
     for (let item of workingItems) {
       const base = item.originalQty || 0;
       const delta = item.quantity - base;
