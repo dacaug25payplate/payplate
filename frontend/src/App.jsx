@@ -1,5 +1,4 @@
-
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -20,6 +19,13 @@ import UserViewmenu from "./pages/user/UserViewMenu";
 import ViewOrder from "./pages/cook/ViewOrder";
 import UserViewOrder from "./pages/user/UserViewOrder";
 import AdminViewOrders from "./pages/admin/AdminViewOrders";
+import WaiterViewMenu from "./pages/waiter/WaiterViewMenu";
+import OrderList from "./pages/waiter/OrderList";
+import UserProfile from "./pages/UserProfile";
+
+/* 🔔 CENTER TOAST */
+import CenterToast from "./pages/CenterToast";
+import { registerToast } from "./Services/toastrService";
 
 const AuthLayoutWithNavbar = () => (
   <div
@@ -74,6 +80,7 @@ const router = createBrowserRouter([
     path: "/cook",
     element: <CookDashboard />,
     children: [
+       { index: true, element: <ViewOrder /> }, 
       { path: "/cook/vieworder", element: <ViewOrder /> }
     ]
   },
@@ -81,7 +88,10 @@ const router = createBrowserRouter([
     path: "/waiter",
     element: <WaiterDashboard />,
     children: [
-      { path: "/waiter/viewmenu", element: <Viewmenu /> }
+      { index: true, element: <OrderList /> },
+      { path: "/waiter/orderlist", element: <OrderList /> },
+      { path: "/waiter/viewmenu", element: <WaiterViewMenu /> },
+      { path: "/waiter/userprofile", element: <UserProfile /> }
     ]
   },
   {
@@ -96,7 +106,38 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  const [toast, setToast] = useState({
+    show: false,
+    type: "",
+    message: ""
+  });
+
+  useEffect(() => {
+    registerToast((type, message) => {
+      setToast({
+        show: true,
+        type,
+        message
+      });
+    });
+  }, []);
+
+  return (
+    <>
+      {/* ROUTER */}
+      <RouterProvider router={router} />
+
+      {/* CENTER TOAST MODAL */}
+      <CenterToast
+        show={toast.show}
+        type={toast.type}
+        message={toast.message}
+        onClose={() =>
+          setToast(prev => ({ ...prev, show: false }))
+        }
+      />
+    </>
+  );
 }
 
 export default App;
