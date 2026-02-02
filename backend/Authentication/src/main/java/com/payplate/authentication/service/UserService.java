@@ -64,6 +64,11 @@ public class UserService {
 	public boolean isUsernameExists(String username) {
 	    return repo.existsByUsername(username);
 	}
+	
+	public String getUsernameById(int id) {
+	    return repo.findUsernameById(id)
+	            .orElse("Unknown User");
+	}
 
 
 }

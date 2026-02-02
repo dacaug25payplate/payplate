@@ -33,6 +33,12 @@ function SideNav() {
             View Feedbacks
           </Link>
         </li>
+
+        <li className="nav-item">
+          <Link className="nav-link" to="/admin/vieworders">
+            View orders
+          </Link>
+        </li>
       </ul>
     </div>
   );

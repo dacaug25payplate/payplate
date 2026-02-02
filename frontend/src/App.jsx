@@ -12,13 +12,14 @@ import CookDashboard from "./pages/cook/CookDashboard";
 import Navbar from "./pages/Navbar";
 import Viewmenu from "./pages/admin/viewMenu";
 import AddDiscount from "./pages/admin/addDiscount";
-import Viewfeedback from "./pages/admin/viewfeedback";
+import AdminViewFeedbacks from "./pages/admin/AdminViewFeedbacks";
 import StaffList from "./pages/admin/staffList";
 import StaffRegister from "./pages/admin/staffRegister";
 import AddMenu from "./pages/admin/AddMenu"
 import UserViewmenu from "./pages/user/UserViewMenu";
 import ViewOrder from "./pages/cook/ViewOrder";
 import UserViewOrder from "./pages/user/UserViewOrder";
+import AdminViewOrders from "./pages/admin/AdminViewOrders";
 
 const AuthLayoutWithNavbar = () => (
   <div
@@ -65,7 +66,8 @@ const router = createBrowserRouter([
        { path: "/admin/addmenu", element: <AddMenu /> },
       { path: "/admin/viewmenu", element: <Viewmenu/> },
       { path: "/admin/adddiscount", element: <AddDiscount /> },
-      { path: "/admin/viewfeedbacks", element: <Viewfeedback /> },
+      { path: "/admin/viewfeedbacks", element: <AdminViewFeedbacks /> },
+      { path: "/admin/vieworders", element: <AdminViewOrders /> },
     ]
   },
   {
