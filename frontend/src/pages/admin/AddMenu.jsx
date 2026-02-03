@@ -97,7 +97,7 @@ function AddMenu() {
   };
 
   return (
-    <div className="p-4">
+    <div className="container mt-4">
 
       <h4 className="mb-3">Add New Menu</h4>
 
