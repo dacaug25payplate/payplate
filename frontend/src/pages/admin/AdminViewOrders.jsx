@@ -3,180 +3,212 @@ import axios from "axios";
 
 function AdminViewOrders() {
 
-  const [orders, setOrders] = useState([]);
-  const [paymentStatusMap, setPaymentStatusMap] = useState({});
-  const [selectedOrder, setSelectedOrder] = useState(null);
+    const [orders, setOrders] = useState([]);
+    const [paymentStatusMap, setPaymentStatusMap] = useState({});
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const intervalRef = useRef(null);
+    const intervalRef = useRef(null);
 
-  const STATUS_PRIORITY = {
-    DELIVERED: 1,
-    READY: 2,
-    IN_PREPARATION: 3,
-    PENDING: 4
-  };
+    const STATUS_PRIORITY = {
+        DELIVERED: 1,
+        READY: 2,
+        IN_PREPARATION: 3,
+        PENDING: 4
+    };
 
-  useEffect(() => {
-    loadData();
+    useEffect(() => {
+        loadData();
 
-    intervalRef.current = setInterval(loadData, 5000);
-    return () => clearInterval(intervalRef.current);
-  }, []);
+        intervalRef.current = setInterval(loadData, 5000);
+        return () => clearInterval(intervalRef.current);
+    }, []);
 
-  // ---------------- LOAD DATA ----------------
-  const loadData = async () => {
-    await Promise.all([
-      fetchOrders(),
-      fetchPaymentStatuses()
-    ]);
-  };
 
+<<<<<<< HEAD
   // ---------------- API CALLS ----------------
   const fetchOrders = async () => {
     const res = await axios.get("http://localhost:8080/orders/kitchen");
     setOrders(sortOrders(res.data));
   };
+=======
+    // ---------------- LOAD DATA ----------------
+    const loadData = async () => {
+        await Promise.all([
+            fetchOrders(),
+            fetchPaymentStatuses()
+        ]);
+    };
+>>>>>>> b9fb146c4111363f1e3f473c9a56d571a990f236
 
-  const fetchPaymentStatuses = async () => {
-    const res = await axios.get(
-      "http://localhost:5290/api/billing/status-map"
-    );
-    setPaymentStatusMap(res.data);
-  };
+    // ---------------- API CALLS ----------------
+    const fetchOrders = async () => {
+        const res = await axios.get("http://localhost:8082/orders/kitchen");
+        setOrders(sortOrders(res.data));
+    };
 
-  const generateBill = async (order) => {
-    try {
-      await axios.post(
-        "http://localhost:5290/api/billing/generate",
-        null,
-        {
-          params: {
-            orderId: order.orderId,
-            billAmount: order.totalamount // ⚠ backend field name
-          }
-        }
-      );
-
-      alert(`Bill generated for Order #${order.orderId}`);
-      setSelectedOrder(null);
-      fetchPaymentStatuses();
-
-    } catch (err) {
-      alert(err.response?.data || "Failed to generate bill");
-    }
-  };
-
-  // ---------------- HELPERS ----------------
-  const sortOrders = (list) =>
-    [...list].sort(
-      (a, b) =>
-        (STATUS_PRIORITY[a.status] || 99) -
-        (STATUS_PRIORITY[b.status] || 99)
-    );
-
-  const getBadgeClass = (status) => {
-    switch (status) {
-      case "DELIVERED": return "bg-dark";
-      case "READY": return "bg-success";
-      case "IN_PREPARATION": return "bg-primary";
-      case "PENDING": return "bg-warning";
-      default: return "bg-secondary";
-    }
-  };
-
-  // ---------------- UI ----------------
-  return (
-    <div className="container mt-4">
-      <h4 className="mb-4">📦 Orders Overview</h4>
-
-      <div className="row">
-        {orders.map(order => {
-
-          const paymentStatus = paymentStatusMap[order.orderId];
-          // undefined | "UNPAID" | "PAID"
-
-          const isVisibleToAdmin = paymentStatus !== "PAID";
-          if (!isVisibleToAdmin) return null;
-
-          return (
-            <div key={order.orderId} className="col-md-3 mb-4">
-              <div
-                className="card shadow-sm h-100"
-                style={{ borderRadius: "14px", cursor: "pointer" }}
-                onClick={() => setSelectedOrder(order)}
-              >
-                <div className="card-body">
-                  <h6 className="fw-bold">Table {order.tableId}</h6>
-                  <p className="mb-1">Order #{order.orderId}</p>
-
-                  <span className={`badge ${getBadgeClass(order.status)}`}>
-                    {order.status}
-                  </span>
-
-                  <p className="text-muted mt-2">
-                    {order.items?.length || 0} items
-                  </p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* MODAL */}
-      {selectedOrder && (() => {
-
-        const paymentStatus = paymentStatusMap[selectedOrder.orderId];
-        const showGenerateButton = selectedOrder.status === "DELIVERED";
-        const enableGenerateButton = paymentStatus === undefined;
-
-        return (
-          <div className="modal show fade d-block"
-            style={{ background: "rgba(0,0,0,0.6)" }}>
-            <div className="modal-dialog modal-lg modal-dialog-centered">
-              <div className="modal-content">
-
-                <div className="modal-header">
-                  <h5 className="modal-title">
-                    Order #{selectedOrder.orderId} | Table {selectedOrder.tableId}
-                  </h5>
-                  <button
-                    className="btn-close"
-                    onClick={() => setSelectedOrder(null)}
-                  />
-                </div>
-
-                <div className="modal-body">
-                  {selectedOrder.items.map((item, i) => (
-                    <div key={i}
-                      className="d-flex justify-content-between border-bottom pb-2 mb-2">
-                      <span>{item.menuName}</span>
-                      <span>Qty: {item.quantity}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="modal-footer">
-                  {showGenerateButton && (
-                    <button
-                      className="btn btn-success w-100"
-                      disabled={!enableGenerateButton}
-                      onClick={() => generateBill(selectedOrder)}
-                    >
-                      {paymentStatus === "UNPAID"
-                        ? "Waiting for Payment"
-                        : "Generate Bill"}
-                    </button>
-                  )}
-                </div>
-
-              </div>
-            </div>
-          </div>
+    const fetchPaymentStatuses = async () => {
+        const res = await axios.get(
+            "http://localhost:5290/api/billing/status-map"
         );
-      })()}
-    </div>
-  );
+        setPaymentStatusMap(res.data);
+    };
+
+    const generateBill = async (order) => {
+        const billAmount = order.totalAmount;
+
+        if (!billAmount || billAmount <= 0) {
+            alert("Invalid bill amount");
+            return;
+        }
+
+        try {
+            await axios.post(
+                "http://localhost:5290/api/billing/generate",
+                null,
+                {
+                    params: {
+                        orderId: order.orderId,
+                        billAmount: billAmount
+                    }
+                }
+            );
+
+            alert(`Bill generated for Order #${order.orderId}`);
+            setSelectedOrder(null);
+
+        } catch (err) {
+            alert(err.response?.data || "Failed to generate bill");
+        }
+    };
+
+    const getPaymentBadge = (paymentStatus) => {
+        if (paymentStatus === "PAID")
+            return <span className="badge bg-success ms-2">PAID</span>;
+
+        if (paymentStatus === "UNPAID")
+            return <span className="badge bg-warning text-dark ms-2">UNPAID</span>;
+
+        return <span className="badge bg-secondary ms-2">NO BILL</span>;
+    };
+
+
+
+    // ---------------- HELPERS ----------------
+    const sortOrders = (list) =>
+        [...list].sort(
+            (a, b) =>
+                (STATUS_PRIORITY[a.status] || 99) -
+                (STATUS_PRIORITY[b.status] || 99)
+        );
+
+    const getBadgeClass = (status) => {
+        switch (status) {
+            case "DELIVERED": return "bg-dark";
+            case "READY": return "bg-success";
+            case "IN_PREPARATION": return "bg-primary";
+            case "PENDING": return "bg-warning";
+            default: return "bg-secondary";
+        }
+    };
+
+    // ---------------- UI ----------------
+    return (
+        <div className="container mt-4">
+            <h4 className="mb-4">📦 Orders Overview</h4>
+
+            <div className="row">
+                {orders.map(order => {
+
+                    const paymentStatus = paymentStatusMap[order.orderId];
+
+                    const isVisibleToAdmin = paymentStatus !== "PAID";
+                    if (!isVisibleToAdmin) return null;
+
+                    return (
+                        <div key={order.orderId} className="col-md-3 mb-4">
+                            <div
+                                className="card shadow-sm h-100"
+                                style={{ borderRadius: "14px", cursor: "pointer" }}
+                                onClick={() => setSelectedOrder(order)}
+                            >
+                                <div className="card-body">
+                                    <h6 className="fw-bold">Table {order.tableId}</h6>
+                                    <p className="mb-1">Order #{order.orderId}</p>
+
+                                    <div>
+                                        <span className={`badge ${getBadgeClass(order.status)}`}>
+                                            {order.status}
+                                        </span>
+
+                                        {getPaymentBadge(paymentStatus)}
+                                    </div>
+
+
+                                    <p className="text-muted mt-2">
+                                        {order.items?.length || 0} items
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* MODAL */}
+            {selectedOrder && (() => {
+
+                const paymentStatus = paymentStatusMap[selectedOrder.orderId];
+                const showGenerateButton = selectedOrder.status === "DELIVERED";
+                const enableGenerateButton = paymentStatus === undefined;
+
+                return (
+                    <div className="modal show fade d-block"
+                        style={{ background: "rgba(0,0,0,0.6)" }}>
+                        <div className="modal-dialog modal-lg modal-dialog-centered">
+                            <div className="modal-content">
+
+                                <div className="modal-header">
+                                    <h5 className="modal-title">
+                                        Order #{selectedOrder.orderId} | Table {selectedOrder.tableId}
+                                    </h5>
+                                    <button
+                                        className="btn-close"
+                                        onClick={() => setSelectedOrder(null)}
+                                    />
+                                </div>
+
+                                <div className="modal-body">
+                                    {selectedOrder.items.map((item, i) => (
+                                        <div key={i}
+                                            className="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                            <span>{item.menuName}</span>
+                                            <span>Qty: {item.quantity}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+
+                                <div className="modal-footer">
+                                    {showGenerateButton && (
+                                        <button
+                                            className="btn btn-success w-100"
+                                            disabled={!enableGenerateButton}
+                                            onClick={() => generateBill(selectedOrder)}
+                                        >
+                                            {paymentStatus === "UNPAID"
+                                                ? "Waiting for Payment"
+                                                : "Generate Bill"}
+                                        </button>
+                                    )}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                );
+            })()}
+        </div>
+    );
 }
 
 export default AdminViewOrders;

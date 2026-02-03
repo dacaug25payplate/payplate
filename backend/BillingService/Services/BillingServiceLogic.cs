@@ -11,23 +11,22 @@ namespace BillingService.Services
             _context = context;
         }
 
+        // ✅ Generate bill ONLY ONCE
         public Bill GenerateBill(int orderId, double billAmount)
         {
-            // ❗ Prevent duplicate bill
-            var existingBill = _context.Bills
+            // 🚫 Prevent duplicate bill
+            var existing = _context.Bills
                 .FirstOrDefault(b => b.Orderid == orderId);
 
-            if (existingBill != null)
-            {
-                throw new InvalidOperationException("Bill already generated for this order");
-            }
+            if (existing != null)
+                throw new Exception("Bill already generated");
 
             DateTime now = DateTime.Now;
 
-            // 1️⃣ Calculate tax (5%)
+            // 1️⃣ Tax (5%)
             double tax = billAmount * 0.05;
 
-            // 2️⃣ Find applicable discount
+            // 2️⃣ Discount logic
             var discount = _context.Discounts
                 .Where(d =>
                     billAmount >= d.MinAmt &&
@@ -38,12 +37,14 @@ namespace BillingService.Services
                 .FirstOrDefault();
 
             double discountValue =
-                discount != null ? (billAmount * discount.Discount1 / 100) : 0;
+                discount != null
+                ? billAmount * discount.Discount1 / 100
+                : 0;
 
             // 3️⃣ Net amount
             double netAmount = billAmount + tax - discountValue;
 
-            // 4️⃣ Create bill
+            // 4️⃣ Save bill
             var bill = new Bill
             {
                 Orderid = orderId,
@@ -61,15 +62,21 @@ namespace BillingService.Services
             return bill;
         }
 
-         public Dictionary<int, string> GetPaymentStatusMap()
+        // ✅ View bill anytime
+        public Bill GetBillByOrderId(int orderId)
         {
             return _context.Bills
-                .GroupBy(b => b.Orderid)
-                .Select(g => g.OrderByDescending(b => b.Billid).First())
-                .ToDictionary(
-                    b => b.Orderid,
-                    b => b.Paymentstatus
-                );
+                .FirstOrDefault(b => b.Orderid == orderId)
+                ?? throw new Exception("Bill not found");
         }
+
+        // ✅ Used by Admin UI
+        public Dictionary<int, string> GetPaymentStatusMap()
+        {
+            return _context.Bills
+                .ToDictionary(b => b.Orderid, b => b.Paymentstatus);
+        }
+
+        
     }
 }
