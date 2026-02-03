@@ -17,11 +17,11 @@ function ViewOrder() {
 
   // ================= API CALLS =================
   const fetchOrders = async () => {
-    const res = await axios.get("http://localhost:8082/orders/kitchen");
+    const res = await axios.get("http://localhost:8080/orders/kitchen");
 
-    // FIFO + hide READY orders
+    // FIFO + hide READY & DELIVERED
     const queuedOrders = res.data
-      .filter(o => o.status !== "READY")
+      .filter(o => o.status !== "READY" && o.status !== "DELIVERED")
       .sort((a, b) => a.orderId - b.orderId);
 
     setOrders(queuedOrders);
@@ -29,10 +29,10 @@ function ViewOrder() {
 
   const fetchStatuses = async () => {
     const res = await axios.get(
-      "http://localhost:8082/orders/getAllOrderStatus"
+      "http://localhost:8080/orders/getAllOrderStatus"
     );
 
-    // Only cook-allowed statuses (NO DELIVERED)
+    // Only cook-allowed statuses
     const cookStatuses = res.data
       .filter(s => s.statusname !== "DELIVERED")
       .sort((a, b) => {
@@ -48,13 +48,13 @@ function ViewOrder() {
   };
 
   const fetchMenu = async () => {
-    const res = await axios.get("http://localhost:8081/api/getAllMenu");
+    const res = await axios.get("http://localhost:8080/Menu/getAllMenu");
     setMenuList(res.data);
   };
 
   // ================= UPDATE STATUS =================
   const updateStatus = async () => {
-    await axios.put("http://localhost:8082/orders/updateStatus", {
+    await axios.put("http://localhost:8080/orders/updateStatus", {
       orderid: selectedOrder.orderId,
       orderstatusid: selectedStatusId
     });
@@ -76,7 +76,7 @@ function ViewOrder() {
   const getImage = (menuName) => {
     const found = menuList.find(m => m.menuname === menuName);
     return found
-      ? `http://localhost:8081${found.imageUrl}`
+      ? `http://localhost:8080${found.imageUrl}`
       : "https://via.placeholder.com/80";
   };
 
@@ -88,31 +88,41 @@ function ViewOrder() {
 
       {/* ORDER QUEUE */}
       <div className="row">
-        {orders.map(order => (
-          <div key={order.orderId} className="col-md-3 mb-4">
-            <div
-              className="card shadow-sm h-100"
-              style={{ cursor: "pointer", borderRadius: "14px" }}
-              onClick={() => {
-                setSelectedOrder(order);
-                setSelectedStatusId(order.orderstatusid); // default = PENDING
-              }}
-            >
-              <div className="card-body">
-                <h6 className="fw-bold">Table {order.tableId}</h6>
-                <p className="mb-1">Order #{order.orderId}</p>
+        {orders.map((order, index) => {
+          const isFirst = index === 0;
 
-                <span className={`badge ${getBadgeClass(order.status)}`}>
-                  {order.status}
-                </span>
+          return (
+            <div key={order.orderId} className="col-md-3 mb-4">
+              <div
+                className={`card shadow-sm h-100 ${
+                  isFirst ? "border border-success border-3" : ""
+                }`}
+                style={{
+                  cursor: "pointer",
+                  borderRadius: "14px",
+                  backgroundColor: isFirst ? "#e9fbe9" : "white"
+                }}
+                onClick={() => {
+                  setSelectedOrder(order);
+                  setSelectedStatusId(order.orderstatusid);
+                }}
+              >
+                <div className="card-body">
+                  <h6 className="fw-bold">Table {order.tableId}</h6>
+                  <p className="mb-1">Order #{order.orderId}</p>
 
-                <p className="text-muted mt-2 mb-0">
-                  {order.items.length} items
-                </p>
+                  <span className={`badge ${getBadgeClass(order.status)}`}>
+                    {order.status}
+                  </span>
+
+                  <p className="text-muted mt-2 mb-0">
+                    {order.items.length} items
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* ================= MODAL ================= */}
@@ -135,7 +145,7 @@ function ViewOrder() {
                 />
               </div>
 
-              {/* BODY (3 ITEMS + SCROLL) */}
+              {/* BODY */}
               <div
                 className="modal-body"
                 style={{ maxHeight: "300px", overflowY: "auto" }}
@@ -169,7 +179,6 @@ function ViewOrder() {
               {/* FOOTER */}
               <div className="modal-footer justify-content-between">
 
-                {/* STATUS DROPDOWN */}
                 <select
                   className="form-select w-50"
                   value={selectedStatusId}

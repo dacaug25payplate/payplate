@@ -15,17 +15,17 @@ function WaiterViewMenu() {
 
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllCategory")
+    axios.get("http://localhost:8080/Menu/getAllCategory")
       .then(res => setCategories(res.data));
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllSubCategory")
+    axios.get("http://localhost:8080/Menu/getAllSubCategory")
       .then(res => setSubCategories(res.data));
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllMenu")
+    axios.get("http://localhost:8080/Menu/getAllMenu")
       .then(res => setMenuList(res.data));
   }, []);
 
@@ -47,7 +47,7 @@ function WaiterViewMenu() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:8081/api/deletemenu/${menuid}`);
+      await axios.delete(`http://localhost:8080/Menu/deletemenu/${menuid}`);
 
       setMenuList(prev => prev.filter(menu => menu.menuid !== menuid));
 
@@ -72,12 +72,12 @@ function WaiterViewMenu() {
     }
 
     try {
-      await axios.put(`http://localhost:8081/api/updatemenu/${editingMenu.menuid}`, formData);
+      await axios.put(`http://localhost:8080/Menu/updatemenu/${editingMenu.menuid}`, formData);
 
       toastr.success("Menu updated");
 
       // Refresh list
-      const res = await axios.get("http://localhost:8081/api/getAllMenu");
+      const res = await axios.get("http://localhost:8080/Menu/getAllMenu");
       setMenuList(res.data);
 
       setEditingMenu(null);
@@ -148,7 +148,7 @@ function WaiterViewMenu() {
             <div className="card h-100 shadow-sm">
 
               <img
-                src={`http://localhost:8081${menu.imageUrl}`}
+                src={`http://localhost:8080${menu.imageUrl}`}
                 className="card-img-top"
                 style={{ height: "160px", objectFit: "cover" }}
                 alt={menu.menuname}
@@ -163,7 +163,7 @@ function WaiterViewMenu() {
                   {menu.category.categoryname}
                 </span>
 
-                <div className="d-flex gap-2 mt-3">
+                {/* <div className="d-flex gap-2 mt-3">
                   <button
                     className="btn btn-sm btn-outline-primary flex-fill"
                     onClick={() => setEditingMenu(menu)}
@@ -177,7 +177,7 @@ function WaiterViewMenu() {
                   >
                     Delete
                   </button>
-                </div>
+                </div> */}
               </div>
 
             </div>

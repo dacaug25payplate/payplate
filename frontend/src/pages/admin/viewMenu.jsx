@@ -14,17 +14,17 @@ function Viewmenu() {
 
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllCategory")
+    axios.get("http://localhost:8080/Menu/getAllCategory")
       .then(res => setCategories(res.data));
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllSubCategory")
+    axios.get("http://localhost:8080/Menu/getAllSubCategory")
       .then(res => setSubCategories(res.data));
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllMenu")
+    axios.get("http://localhost:8080/Menu/getAllMenu")
       .then(res => setMenuList(res.data));
   }, []);
 
@@ -46,7 +46,7 @@ function Viewmenu() {
   if (!confirmDelete) return;
 
   try {
-    await axios.delete(`http://localhost:8081/api/deletemenu/${menuid}`);
+    await axios.delete(`http://localhost:8080/Menu/deletemenu/${menuid}`);
 
     setMenuList(prev => prev.filter(menu => menu.menuid !== menuid));
 
@@ -71,12 +71,12 @@ const handleUpdate = async () => {
   }
 
   try {
-    await axios.put(`http://localhost:8081/api/updatemenu/${editingMenu.menuid}`, formData);
+    await axios.put(`http://localhost:8080/Menu/updatemenu/${editingMenu.menuid}`, formData);
 
     alert("Menu updated");
 
     // Refresh list
-    const res = await axios.get("http://localhost:8081/api/getAllMenu");
+    const res = await axios.get("http://localhost:8080/Menu/getAllMenu");
     setMenuList(res.data);
 
     setEditingMenu(null);
@@ -144,7 +144,7 @@ const handleUpdate = async () => {
             <div className="card h-100 shadow-sm">
 
               <img
-                src={`http://localhost:8081${menu.imageUrl}`}
+                src={`http://localhost:8080${menu.imageUrl}`}
                 className="card-img-top"
                 style={{ height: "160px", objectFit: "cover" }}
                 alt={menu.menuname}

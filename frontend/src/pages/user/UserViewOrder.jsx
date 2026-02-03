@@ -22,7 +22,7 @@ function UserOrders() {
 
   const fetchOrders = async () => {
     const res = await axios.get(
-      `http://localhost:8082/orders/user/${userId}`
+      `http://localhost:8080/orders/user/${userId}`
     );
 
     const sorted = res.data
@@ -40,7 +40,7 @@ function UserOrders() {
   };
 
   const fetchMenu = async () => {
-    const res = await axios.get("http://localhost:8081/api/getAllMenu");
+    const res = await axios.get("http://localhost:8080/Menu/getAllMenu");
     setMenuList(res.data);
   };
 
@@ -121,7 +121,7 @@ function UserOrders() {
       const delta = item.quantity - base;
 
       if (delta !== 0) {
-        await axios.post("http://localhost:8082/orders/update", {
+        await axios.post("http://localhost:8080/orders/update", {
           orderid: activeOrder.orderid,
           menuid: item.menuid,
           quantity: delta,
@@ -233,7 +233,7 @@ function UserOrders() {
               <div key={item.menuid} className="card mb-2">
                 <div className="card-body d-flex gap-3">
                   <img
-                    src={`http://localhost:8081${item.imageUrl}`}
+                    src={`http://localhost:8080${item.imageUrl}`}
                     alt=""
                     style={{ width: 70, height: 70, borderRadius: 8 }}
                   />

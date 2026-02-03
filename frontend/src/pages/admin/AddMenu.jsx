@@ -19,10 +19,10 @@ function AddMenu() {
   const [subcategories, setSubcategories] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllCategory")
+    axios.get("http://localhost:8080/Menu/getAllCategory")
       .then(res => setCategories(res.data));
 
-    axios.get("http://localhost:8081/api/getAllSubCategory")
+    axios.get("http://localhost:8080/Menu/getAllSubCategory")
       .then(res => setSubcategories(res.data));
   }, []);
 
@@ -82,7 +82,7 @@ function AddMenu() {
     Object.keys(form).forEach(key => formData.append(key, form[key]));
 
     try {
-      await axios.post("http://localhost:8081/api/menu", formData);
+      await axios.post("http://localhost:8080/Menu/menu", formData);
 
       setForm(initialForm);
       setErrors({});

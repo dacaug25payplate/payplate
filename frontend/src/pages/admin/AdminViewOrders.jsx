@@ -33,7 +33,7 @@ function AdminViewOrders() {
 
   // ---------------- API CALLS ----------------
   const fetchOrders = async () => {
-    const res = await axios.get("http://localhost:8082/orders/kitchen");
+    const res = await axios.get("http://localhost:8080/orders/kitchen");
     setOrders(sortOrders(res.data));
   };
 

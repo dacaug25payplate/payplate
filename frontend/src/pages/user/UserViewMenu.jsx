@@ -27,25 +27,25 @@ function UserViewmenu() {
   // ---------------- API CALLS ----------------
   // ----------------- api call for get all category -------------
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllCategory")
+    axios.get("http://localhost:8080/Menu/getAllCategory")
       .then(res => setCategories(res.data));
   }, []);
 
   // ----------------- api call for get all subcategory -------------
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllSubCategory")
+    axios.get("http://localhost:8080/Menu/getAllSubCategory")
       .then(res => setSubCategories(res.data));
   }, []);
 
   // ----------- api call for getall menu-----------
   useEffect(() => {
-    axios.get("http://localhost:8081/api/getAllMenu")
+    axios.get("http://localhost:8080/Menu/getAllMenu")
       .then(res => setMenuList(res.data));
   }, []);
 
   // ---------- api call for getall table -----------
   useEffect(() => {
-    axios.get("http://localhost:8082/orders/servingTables")
+    axios.get("http://localhost:8080/orders/servingTables")
       .then(res => setTables(res.data))
       .catch(err => console.error(err));
   }, []);
@@ -150,7 +150,7 @@ function UserViewmenu() {
 
     try {
       await axios.post(
-        "http://localhost:8082/orders/confirm",
+        "http://localhost:8080/orders/confirm",
         orderData
       );
 
@@ -259,7 +259,7 @@ function UserViewmenu() {
               <div className="card h-100 shadow-sm">
 
                 <img
-                  src={`http://localhost:8081${menu.imageUrl}`}
+                  src={`http://localhost:8080${menu.imageUrl}`}
                   className="card-img-top"
                   style={{ height: "160px", objectFit: "cover" }}
                   alt={menu.menuname}
@@ -377,7 +377,7 @@ function UserViewmenu() {
                       <div className="d-flex gap-2">
                         {/* DISH IMAGE */}
                         <img
-                          src={`http://localhost:8081${item.imageUrl}`}
+                          src={`http://localhost:8080${item.imageUrl}`}
                           alt={item.menuname}
                           style={{
                             width: "70px",

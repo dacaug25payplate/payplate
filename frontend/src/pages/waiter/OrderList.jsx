@@ -17,25 +17,25 @@ function OrderList() {
 
     // ---------------- API CALLS ----------------
     const fetchOrders = async () => {
-        const res = await axios.get("http://localhost:8082/orders/kitchen");
+        const res = await axios.get("http://localhost:8080/orders/kitchen");
         setOrders(res.data);
     };
 
     const fetchStatuses = async () => {
         const res = await axios.get(
-            "http://localhost:8082/orders/getAllOrderStatus"
+            "http://localhost:8080/orders/getAllOrderStatus"
         );
         setStatuses(res.data);
     };
 
     const fetchMenu = async () => {
-        const res = await axios.get("http://localhost:8081/api/getAllMenu");
+        const res = await axios.get("http://localhost:8080/Menu/getAllMenu");
         setMenuList(res.data);
     };
 
     // ---------------- UPDATE STATUS ----------------
     const updateStatus = async () => {
-        await axios.put(`http://localhost:8082/orders/updateStatus`, {
+        await axios.put(`http://localhost:8080/orders/updateStatus`, {
             orderid: selectedOrder.orderId,
             orderstatusid: selectedStatusId
         });
@@ -60,7 +60,7 @@ function OrderList() {
     const getImage = (menuName) => {
         const found = menuList.find(m => m.menuname === menuName);
         return found
-            ? `http://localhost:8081${found.imageUrl}`
+            ? `http://localhost:8080${found.imageUrl}`
             : `https://via.placeholder.com/80`;
     };
 

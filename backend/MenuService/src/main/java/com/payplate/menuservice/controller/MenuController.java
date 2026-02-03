@@ -27,8 +27,8 @@ import com.payplate.menuservice.services.MenuService;
 
 
 @RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:5173")
+@RequestMapping("/Menu")
+//@CrossOrigin(origins = "http://localhost:5173")
 public class MenuController {
 	@Autowired
 	MenuService menuService;
@@ -52,9 +52,6 @@ public class MenuController {
 		return menuService.getAllSubCategory();
 	}
 	
-
-	//endpoint for save menu
-
 	// Add menu to admin
 
 	@PostMapping("/menu")
