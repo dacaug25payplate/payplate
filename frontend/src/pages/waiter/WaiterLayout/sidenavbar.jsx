@@ -7,8 +7,11 @@ function SideNav() {
 
         <li className="nav-item">
           <Link className="nav-link" to="/waiter/viewmenu">
-            View Menu waiter
-          </Link> 
+            View Menu 
+          </Link>
+          <Link className="nav-link" to="/waiter/orderlist">
+            View Order List
+          </Link>
         </li>
       </ul>
     </div>

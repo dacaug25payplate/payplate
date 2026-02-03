@@ -1,98 +1,182 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+
 function AddDiscount() {
-  const navigate = useNavigate();
+  const [minAmt, setMinAmt] = useState("");
+  const [discountPercent, setDiscountPercent] = useState("");
+  const [startDateTime, setStartDateTime] = useState("");
+  const [endDateTime, setEndDateTime] = useState("");
+  const [discounts, setDiscounts] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [form, setForm] = useState({
-    username: "",
-    password: "",
-    mobileno: "",
-    address: "",
-    answer: "",
-    role: { roleid: 2 },
-    question: { questionid: "" }
-  });
-
-  const [questions, setQuestions] = useState([]);
+  const API_URL = "http://localhost:5290/api/discounts";
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/questions")
-      .then(res => setQuestions(res.data));
+    fetchDiscounts();
   }, []);
 
-  const submit = async (e) => {
-    e.preventDefault();
+  const fetchDiscounts = async () => {
+    const res = await axios.get(API_URL);
+    setDiscounts(res.data);
+  };
+
+  const validateForm = () => {
+    if (!minAmt || Number(minAmt) <= 0) {
+      return "Minimum bill amount must be greater than 0";
+    }
+
+    if (!discountPercent || discountPercent < 1 || discountPercent > 99) {
+      return "Discount must be between 1% and 99%";
+    }
+
+    if (startDateTime && endDateTime) {
+      if (new Date(startDateTime) > new Date(endDateTime)) {
+        return "Start date cannot be after end date";
+      }
+    }
+
+    return "";
+  };
+
+  const submitDiscount = async () => {
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    const data = {
+      minAmt: Number(minAmt),
+      discount1: Number(discountPercent),
+      startdatetime: startDateTime || null,
+      enddatetime: endDateTime || null
+    };
+
     try {
-      await axios.post("http://localhost:8080/api/register", form);
-      alert("Registered successfully");
-      navigate("/");
+      await axios.post(API_URL, data);
+      alert("Discount added successfully");
+
+      setMinAmt("");
+      setDiscountPercent("");
+      setStartDateTime("");
+      setEndDateTime("");
+
+      fetchDiscounts();
     } catch {
-      alert("Registration failed");
+      alert("Failed to add discount");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const deleteDiscount = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this discount?")) {
+      return;
+    }
+
+    await axios.delete(`${API_URL}/${id}`);
+    fetchDiscounts();
+  };
+
   return (
-    <div className="container">
-      <div className="row justify-content-center align-items-center min-vh-100">
-        <div className="col-md-6">
-          <div className="card shadow p-4">
-            <h3 className="text-center mb-3">Add Menu</h3>
+    <div className="container mt-4">
+      <h4 className="mb-3">Admin – Discount Management</h4>
 
-            <form onSubmit={submit} className="row g-3">
-              <div className="col-md-6">
-                <input className="form-control" placeholder="Menu Name"
-                  onChange={e => setForm({ ...form, username: e.target.value })} />
-              </div>
+      <div className="card p-3 mb-4 shadow-sm">
+        {error && <div className="alert alert-danger py-2">{error}</div>}
 
-              <div className="col-md-6">
-                <input className="form-control" placeholder="Description"
-                  onChange={e => setForm({ ...form, password: e.target.value })} />
-              </div>
+        <label className="fw-bold">Minimum Bill Amount (₹)</label>
+        <input
+          type="number"
+          className="form-control mb-2"
+          value={minAmt}
+          min="1"
+          onChange={e => setMinAmt(e.target.value)}
+        />
 
-              <div className="col-md-6">
-                <input className="form-control" placeholder="Price"
-                  onChange={e => setForm({ ...form, mobileno: e.target.value })} />
-              </div>
+        <label className="fw-bold">Discount Percentage (%)</label>
+        <input
+          type="number"
+          className="form-control mb-2"
+          value={discountPercent}
+          min="1"
+          max="99"
+          maxLength="2"
+          onChange={e => {
+            const value = e.target.value;
+            if (value.length <= 2) {
+              setDiscountPercent(value);
+            }
+          }}
+          placeholder="1–99%"
+        />
 
-              <div className="col-md-6">
-                <input className="form-control" placeholder="Category Name"
-                  onChange={e => setForm({ ...form, address: e.target.value })} />
-              </div>
+        <label className="fw-bold">Start Date & Time</label>
+        <input
+          type="datetime-local"
+          className="form-control mb-2"
+          value={startDateTime}
+          onChange={e => setStartDateTime(e.target.value)}
+          onKeyDown={e => e.preventDefault()}   // ⛔ no manual typing
+        />
 
+        <label className="fw-bold">End Date & Time</label>
+        <input
+          type="datetime-local"
+          className="form-control mb-3"
+          value={endDateTime}
+          onChange={e => setEndDateTime(e.target.value)}
+          onKeyDown={e => e.preventDefault()}   // ⛔ no manual typing
+        />
 
-              <div className="col-md-6">
-                <input className="form-control" placeholder="Sub-Category Name"
-                  onChange={e => setForm({ ...form, address: e.target.value })} />
-              </div>
-
-              <div className="col-md-6">
-                {/* <label className="form-label">Upload Image</label> */}
-                <input
-                  type="file"
-                  className="form-control"
-                  placeholder="Upload image"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setForm({ ...form, image: e.target.files[0] })
-                  }
-                />
-              </div>
-
-              <div className="row mt-4">
-                <div className="col-md-4"></div>
-                <div className="col-md-4">
-                  <button className="btn btn-success w-100">Add Discount</button>
-                </div>
-                <div className="col-md-4"></div>
-              </div>
-            </form>
-          </div>
-        </div>
+        <button
+          className="btn btn-success"
+          onClick={submitDiscount}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Add Discount"}
+        </button>
       </div>
+
+      <h5>Existing Discounts</h5>
+
+      <table className="table table-bordered table-sm mt-2">
+        <thead className="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Min Amount (₹)</th>
+            <th>Discount (%)</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {discounts.map(d => (
+            <tr key={d.discountid}>
+              <td>{d.discountid}</td>
+              <td>{d.minAmt}</td>
+              <td>{d.discount1}%</td>
+              <td>{d.startdatetime ? new Date(d.startdatetime).toLocaleString() : "-"}</td>
+              <td>{d.enddatetime ? new Date(d.enddatetime).toLocaleString() : "-"}</td>
+              <td>
+                <button
+                  className="btn btn-sm btn-danger"
+                  onClick={() => deleteDiscount(d.discountid)}
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
 
-export default AddDiscount; 
+export default AddDiscount;

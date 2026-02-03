@@ -1,5 +1,4 @@
-
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -12,11 +11,21 @@ import CookDashboard from "./pages/cook/CookDashboard";
 import Navbar from "./pages/Navbar";
 import Viewmenu from "./pages/admin/viewMenu";
 import AddDiscount from "./pages/admin/addDiscount";
-import Viewfeedback from "./pages/admin/viewfeedback";
+import AdminViewFeedbacks from "./pages/admin/AdminViewFeedbacks";
 import StaffList from "./pages/admin/staffList";
 import StaffRegister from "./pages/admin/staffRegister";
 import AddMenu from "./pages/admin/AddMenu"
 import UserViewmenu from "./pages/user/UserViewMenu";
+import ViewOrder from "./pages/cook/ViewOrder";
+import UserViewOrder from "./pages/user/UserViewOrder";
+import AdminViewOrders from "./pages/admin/AdminViewOrders";
+import WaiterViewMenu from "./pages/waiter/WaiterViewMenu";
+import OrderList from "./pages/waiter/OrderList";
+import UserProfile from "./pages/UserProfile";
+
+/* 🔔 CENTER TOAST */
+import CenterToast from "./pages/CenterToast";
+import { registerToast } from "./Services/toastrService";
 
 const AuthLayoutWithNavbar = () => (
   <div
@@ -63,21 +72,26 @@ const router = createBrowserRouter([
        { path: "/admin/addmenu", element: <AddMenu /> },
       { path: "/admin/viewmenu", element: <Viewmenu/> },
       { path: "/admin/adddiscount", element: <AddDiscount /> },
-      { path: "/admin/viewfeedbacks", element: <Viewfeedback /> },
+      { path: "/admin/viewfeedbacks", element: <AdminViewFeedbacks /> },
+      { path: "/admin/vieworders", element: <AdminViewOrders /> },
     ]
   },
   {
     path: "/cook",
     element: <CookDashboard />,
     children: [
-      { path: "/cook/viewmenu", element: <Viewmenu /> }
+       { index: true, element: <ViewOrder /> }, 
+      { path: "/cook/vieworder", element: <ViewOrder /> }
     ]
   },
   {
     path: "/waiter",
     element: <WaiterDashboard />,
     children: [
-      { path: "/waiter/viewmenu", element: <Viewmenu /> }
+      { index: true, element: <OrderList /> },
+      { path: "/waiter/orderlist", element: <OrderList /> },
+      { path: "/waiter/viewmenu", element: <WaiterViewMenu /> },
+      { path: "/waiter/userprofile", element: <UserProfile /> }
     ]
   },
   {
@@ -85,13 +99,45 @@ const router = createBrowserRouter([
     element: <UserDashboard />,
     children: [
        { index: true, element: <UserViewmenu /> },
+       {path : "/user/vieworder",element : <UserViewOrder/>},
       { path: "/user/viewmenu", element: <UserViewmenu /> }
     ]
   }
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  const [toast, setToast] = useState({
+    show: false,
+    type: "",
+    message: ""
+  });
+
+  useEffect(() => {
+    registerToast((type, message) => {
+      setToast({
+        show: true,
+        type,
+        message
+      });
+    });
+  }, []);
+
+  return (
+    <>
+      {/* ROUTER */}
+      <RouterProvider router={router} />
+
+      {/* CENTER TOAST MODAL */}
+      <CenterToast
+        show={toast.show}
+        type={toast.type}
+        message={toast.message}
+        onClose={() =>
+          setToast(prev => ({ ...prev, show: false }))
+        }
+      />
+    </>
+  );
 }
 
 export default App;
