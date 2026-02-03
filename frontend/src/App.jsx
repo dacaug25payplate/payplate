@@ -22,6 +22,8 @@ import AdminViewOrders from "./pages/admin/AdminViewOrders";
 import WaiterViewMenu from "./pages/waiter/WaiterViewMenu";
 import OrderList from "./pages/waiter/OrderList";
 import UserProfile from "./pages/UserProfile";
+import ViewBill from "./pages/user/ViewBill";
+import AddFeedback from "./pages/user/AddFeedback"
 
 /* 🔔 CENTER TOAST */
 import CenterToast from "./pages/CenterToast";
@@ -100,7 +102,10 @@ const router = createBrowserRouter([
     children: [
        { index: true, element: <UserViewmenu /> },
        {path : "/user/vieworder",element : <UserViewOrder/>},
-      { path: "/user/viewmenu", element: <UserViewmenu /> }
+      { path: "/user/viewmenu", element: <UserViewmenu /> },
+      { path: "/user/viewbill/:orderId", element: <ViewBill /> },
+      { path: "/user/addfeedback/:orderId", element: <AddFeedback /> }
+
     ]
   }
 ]);

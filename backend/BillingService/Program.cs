@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using BillingService.Models;
 using BillingService.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,15 +12,16 @@ builder.Services.AddSwaggerGen();
 // 🔹 Enable CORS (for React frontend)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowReact",
+    options.AddPolicy("AllowFrontend",
         policy =>
         {
             policy
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:5173")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
 });
+
 
 // 🔹 Register DbContext
 builder.Services.AddDbContext<BillingDbContext>(options =>
@@ -35,7 +36,6 @@ builder.Services.AddScoped<DiscountService>();
 builder.Services.AddScoped<BillingServiceLogic>();
 builder.Services.AddScoped<FeedbackService>();
 
-
 var app = builder.Build();
 
 // 🔹 Configure the HTTP request pipeline
@@ -48,7 +48,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // 🔹 IMPORTANT: Use CORS BEFORE authorization
-app.UseCors("AllowReact");
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 

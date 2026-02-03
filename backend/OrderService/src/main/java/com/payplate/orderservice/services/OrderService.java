@@ -205,6 +205,26 @@ public class OrderService {
 		order.setOrderstatusid(statusid);
 		orderRepository.save(order);
 	}
+	
+	public Orders getOrderById(int orderid) {
+	    return orderRepository.findById(orderid)
+	        .orElseThrow(() -> new RuntimeException("Order not found"));
+	}
+
+	@Transactional
+	public void releaseTable(int orderId) {
+
+	    Orders order = orderRepository.findById(orderId)
+	        .orElseThrow(() -> new RuntimeException("Order not found"));
+
+	    ServingTable table = servingTableRepository
+	        .findById(order.getTableid())
+	        .orElseThrow(() -> new RuntimeException("Table not found"));
+
+	    table.setStatus("AVAILABLE");
+	    servingTableRepository.save(table);
+	}
+
 
 }
 

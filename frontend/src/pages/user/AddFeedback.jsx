@@ -1,80 +1,103 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function AddFeedback({ orderId }) {
+function AddFeedback() {
+  const { orderId } = useParams();
   const user = useSelector(state => state.user.user);
+  const navigate = useNavigate();
 
-  const [rating, setRating] = useState("");
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
   const [comments, setComments] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const API_URL = "http://localhost:5290/api/feedbacks";
 
   const submitFeedback = async () => {
     if (!rating) {
-      alert("Please give a rating");
+      alert("Please select a star rating");
       return;
     }
 
-    setLoading(true);
+    if (!user?.userid) {
+      alert("User not logged in");
+      return;
+    }
 
     const data = {
       userid: user.userid,
-      orderid: orderId,
-      rating: Number(rating),
+      orderid: Number(orderId),
+      rating: rating,
       comments: comments
     };
 
     try {
-      await axios.post(API_URL, data);
-      alert("Thank you for your feedback!");
+      await axios.post(
+        "http://localhost:5290/api/feedbacks",
+        data
+      );
 
-      setRating("");
-      setComments("");
+      alert("Thank you for your feedback!");
+      navigate("/user/viewmenu");
+
     } catch (err) {
+      console.error(err);
       alert("Failed to submit feedback");
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div className="card p-3 mt-3 shadow-sm">
-      <h5 className="mb-3">Rate Your Experience</h5>
+    <div
+      className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: "80vh" }}
+    >
+      <div className="card p-4 shadow" style={{ width: "400px" }}>
+        <h4 className="text-center mb-3">⭐ Rate Your Experience</h4>
 
-      {/* Rating */}
-      <label className="fw-bold">Rating</label>
-      <select
-        className="form-select mb-3"
-        value={rating}
-        onChange={e => setRating(e.target.value)}
-      >
-        <option value="">Select Rating</option>
-        <option value="1">1 ★</option>
-        <option value="2">2 ★★</option>
-        <option value="3">3 ★★★</option>
-        <option value="4">4 ★★★★</option>
-        <option value="5">5 ★★★★★</option>
-      </select>
+        {/* ⭐ STAR RATING */}
+        <div className="d-flex justify-content-center mb-3">
+          {[1, 2, 3, 4, 5].map(star => (
+            <span
+              key={star}
+              style={{
+                fontSize: "30px",
+                cursor: "pointer",
+                color:
+                  (hover || rating) >= star ? "#ffc107" : "#e4e5e9"
+              }}
+              onClick={() => setRating(star)}
+              onMouseEnter={() => setHover(star)}
+              onMouseLeave={() => setHover(0)}
+            >
+              ★
+            </span>
+          ))}
+        </div>
 
-      {/* Comments */}
-      <label className="fw-bold">Comments (optional)</label>
-      <textarea
-        className="form-control mb-3"
-        rows="3"
-        placeholder="Share your experience..."
-        value={comments}
-        onChange={e => setComments(e.target.value)}
-      />
+        <div className="text-center mb-3">
+          {rating > 0 && (
+            <small className="text-muted">
+              You rated {rating} star{rating > 1 && "s"}
+            </small>
+          )}
+        </div>
 
-      <button
-        className="btn btn-success"
-        onClick={submitFeedback}
-        disabled={loading}
-      >
-        {loading ? "Submitting..." : "Submit Feedback"}
-      </button>
+        {/* COMMENTS */}
+        <label className="fw-bold">Comments</label>
+        <textarea
+          className="form-control mb-3"
+          rows="3"
+          placeholder="Share your experience..."
+          value={comments}
+          onChange={e => setComments(e.target.value)}
+        />
+
+        <button
+          className="btn btn-success w-100"
+          onClick={submitFeedback}
+        >
+          Submit Feedback
+        </button>
+      </div>
     </div>
   );
 }

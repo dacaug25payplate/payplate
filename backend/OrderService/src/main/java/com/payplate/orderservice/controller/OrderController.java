@@ -69,6 +69,18 @@ public class OrderController {
             data.get("orderstatusid")
         );
     }
+    
+    @GetMapping("/{orderid}")
+    public Orders getOrderById(@PathVariable int orderid) {
+        return orderService.getOrderById(orderid);
+    }
+    
+    @PutMapping("/release-table/{orderId}")
+    public void releaseTable(@PathVariable int orderId) {
+        orderService.releaseTable(orderId);
+    }
+
+
 
 }
 

@@ -86,61 +86,71 @@ function AddDiscount() {
     <div className="container mt-4">
       <h4 className="mb-3">Admin – Discount Management</h4>
 
-      <div className="card p-3 mb-4 shadow-sm">
-        {error && <div className="alert alert-danger py-2">{error}</div>}
+      <div
+        className="d-flex justify-content-center"
+        style={{ marginTop: "40px" }}   // ⬆️ controls how high from top
+      >
+        <div style={{ width: "100%", maxWidth: "500px" }}>
 
-        <label className="fw-bold">Minimum Bill Amount (₹)</label>
-        <input
-          type="number"
-          className="form-control mb-2"
-          value={minAmt}
-          min="1"
-          onChange={e => setMinAmt(e.target.value)}
-        />
+          {/* 🔽 YOUR EXISTING CARD (UNCHANGED) */}
+          <div className="card p-3 mb-4 shadow-sm">
+            {error && <div className="alert alert-danger py-2">{error}</div>}
 
-        <label className="fw-bold">Discount Percentage (%)</label>
-        <input
-          type="number"
-          className="form-control mb-2"
-          value={discountPercent}
-          min="1"
-          max="99"
-          maxLength="2"
-          onChange={e => {
-            const value = e.target.value;
-            if (value.length <= 2) {
-              setDiscountPercent(value);
-            }
-          }}
-          placeholder="1–99%"
-        />
+            <label className="fw-bold">Minimum Bill Amount (₹)</label>
+            <input
+              type="number"
+              className="form-control mb-2"
+              value={minAmt}
+              min="1"
+              onChange={e => setMinAmt(e.target.value)}
+            />
 
-        <label className="fw-bold">Start Date & Time</label>
-        <input
-          type="datetime-local"
-          className="form-control mb-2"
-          value={startDateTime}
-          onChange={e => setStartDateTime(e.target.value)}
-          onKeyDown={e => e.preventDefault()}   // ⛔ no manual typing
-        />
+            <label className="fw-bold">Discount Percentage (%)</label>
+            <input
+              type="number"
+              className="form-control mb-2"
+              value={discountPercent}
+              min="1"
+              max="99"
+              onChange={e => {
+                const value = e.target.value;
+                if (value.length <= 2) {
+                  setDiscountPercent(value);
+                }
+              }}
+              placeholder="1–99%"
+            />
 
-        <label className="fw-bold">End Date & Time</label>
-        <input
-          type="datetime-local"
-          className="form-control mb-3"
-          value={endDateTime}
-          onChange={e => setEndDateTime(e.target.value)}
-          onKeyDown={e => e.preventDefault()}   // ⛔ no manual typing
-        />
+            <label className="fw-bold">Start Date & Time</label>
+            <input
+              type="datetime-local"
+              className="form-control mb-2"
+              value={startDateTime}
+              onChange={e => setStartDateTime(e.target.value)}
+              onKeyDown={e => e.preventDefault()}
+            />
 
-        <button
-          className="btn btn-success"
-          onClick={submitDiscount}
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Add Discount"}
-        </button>
+            <label className="fw-bold">End Date & Time</label>
+            <input
+              type="datetime-local"
+              className="form-control mb-3"
+              value={endDateTime}
+              onChange={e => setEndDateTime(e.target.value)}
+              onKeyDown={e => e.preventDefault()}
+            />
+
+            <button
+              className="btn btn-success w-100"
+              onClick={submitDiscount}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Add Discount"}
+            </button>
+          </div>
+
+        </div>
       </div>
+
 
       <h5>Existing Discounts</h5>
 

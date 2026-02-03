@@ -162,6 +162,23 @@ function UserOrders() {
     }
   };
 
+
+  //----------view bill-------------
+  const viewBill = async (orderId) => {
+    try {
+      // check if bill exists
+      await axios.get(
+        `http://localhost:5290/api/billing/by-order/${orderId}`
+      );
+
+      // if exists → redirect
+      navigate(`/user/viewbill/${orderId}`);
+
+    } catch (err) {
+      alert("Bill not generated yet. Please wait.");
+    }
+  };
+
   // ================= UI =================
   return (
     <div className="container mt-4">
@@ -203,6 +220,17 @@ function UserOrders() {
                 <div className="fw-bold text-success mt-2">
                   ₹ {order.totalamount}
                 </div>
+
+                <button
+                  className="btn btn-sm btn-outline-primary mt-2"
+                  onClick={(e) => {
+                    e.stopPropagation(); // prevent opening order editor
+                    viewBill(order.orderid);
+                  }}
+                >
+                  View Bill
+                </button>
+
               </div>
 
             </div>
