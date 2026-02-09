@@ -34,7 +34,11 @@ function ViewBill() {
       );
 
       await axios.put(
+<<<<<<< HEAD
         `http://localhost:8080/orders/release-table/${orderId}`
+=======
+        `http://localhost:8082/orders/release-table/${orderId}`
+>>>>>>> c87ec4f75a8e93d7327b2ae6d3782028ab930100
       );
 
       alert("Payment successful");
