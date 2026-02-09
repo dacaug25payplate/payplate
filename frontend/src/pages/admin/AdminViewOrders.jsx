@@ -34,7 +34,6 @@ function AdminViewOrders() {
 
     // ---------------- API CALLS ----------------
     const fetchOrders = async () => {
-<<<<<<< HEAD
         const res = await axios.get("http://localhost:8080/orders/kitchen");
         setOrders(sortOrders(res.data));
     };
@@ -103,66 +102,6 @@ function AdminViewOrders() {
                 (STATUS_PRIORITY[a.status] || 99) -
                 (STATUS_PRIORITY[b.status] || 99)
         );
-=======
-        const res = await axios.get("http://localhost:8082/orders/kitchen");
-        setOrders(sortOrders(res.data));
-    };
-
-    const fetchPaymentStatuses = async () => {
-        const res = await axios.get(
-            "http://localhost:5290/api/billing/status-map"
-        );
-        setPaymentStatusMap(res.data);
-    };
-
-    const generateBill = async (order) => {
-        const billAmount = order.totalAmount;
-
-        if (!billAmount || billAmount <= 0) {
-            alert("Invalid bill amount");
-            return;
-        }
-
-        try {
-            await axios.post(
-                "http://localhost:5290/api/billing/generate",
-                null,
-                {
-                    params: {
-                        orderId: order.orderId,
-                        billAmount: billAmount
-                    }
-                }
-            );
-
-            alert(`Bill generated for Order #${order.orderId}`);
-            setSelectedOrder(null);
-
-        } catch (err) {
-            alert(err.response?.data || "Failed to generate bill");
-        }
-    };
-
-    const getPaymentBadge = (paymentStatus) => {
-        if (paymentStatus === "PAID")
-            return <span className="badge bg-success ms-2">PAID</span>;
-
-        if (paymentStatus === "UNPAID")
-            return <span className="badge bg-warning text-dark ms-2">UNPAID</span>;
-
-        return <span className="badge bg-secondary ms-2">NO BILL</span>;
-    };
-
-
-
-    // ---------------- HELPERS ----------------
-    const sortOrders = (list) =>
-        [...list].sort(
-            (a, b) =>
-                (STATUS_PRIORITY[a.status] || 99) -
-                (STATUS_PRIORITY[b.status] || 99)
-        );
->>>>>>> c87ec4f75a8e93d7327b2ae6d3782028ab930100
 
     const getBadgeClass = (status) => {
         switch (status) {
