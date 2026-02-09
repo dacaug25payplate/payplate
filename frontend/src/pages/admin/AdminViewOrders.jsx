@@ -24,13 +24,6 @@ function AdminViewOrders() {
     }, []);
 
 
-<<<<<<< HEAD
-  // ---------------- API CALLS ----------------
-  const fetchOrders = async () => {
-    const res = await axios.get("http://localhost:8080/orders/kitchen");
-    setOrders(sortOrders(res.data));
-  };
-=======
     // ---------------- LOAD DATA ----------------
     const loadData = async () => {
         await Promise.all([
@@ -38,11 +31,10 @@ function AdminViewOrders() {
             fetchPaymentStatuses()
         ]);
     };
->>>>>>> b9fb146c4111363f1e3f473c9a56d571a990f236
 
     // ---------------- API CALLS ----------------
     const fetchOrders = async () => {
-        const res = await axios.get("http://localhost:8082/orders/kitchen");
+        const res = await axios.get("http://localhost:8080/orders/kitchen");
         setOrders(sortOrders(res.data));
     };
 
@@ -53,33 +45,43 @@ function AdminViewOrders() {
         setPaymentStatusMap(res.data);
     };
 
-    const generateBill = async (order) => {
-        const billAmount = order.totalAmount;
+   const generateBill = async (order) => {
+    const billAmount = order.totalAmount;
 
-        if (!billAmount || billAmount <= 0) {
-            alert("Invalid bill amount");
-            return;
-        }
+    if (!billAmount || billAmount <= 0) {
+        alert("Invalid bill amount");
+        return;
+    }
 
-        try {
-            await axios.post(
-                "http://localhost:5290/api/billing/generate",
-                null,
-                {
-                    params: {
-                        orderId: order.orderId,
-                        billAmount: billAmount
-                    }
+    try {
+        await axios.post(
+            "http://localhost:5290/api/billing/generate",
+            null,
+            {
+                params: {
+                    orderId: order.orderId,
+                    billAmount
                 }
-            );
+            }
+        );
 
-            alert(`Bill generated for Order #${order.orderId}`);
-            setSelectedOrder(null);
+        alert(`Bill generated for Order #${order.orderId}`);
+        setSelectedOrder(null);
+        loadData(); // 🔄 refresh orders & payment status
 
-        } catch (err) {
-            alert(err.response?.data || "Failed to generate bill");
+    } catch (err) {
+        console.error("Generate bill error:", err);
+
+        let message = "Failed to generate bill";
+
+        if (err.response?.data?.message) {
+            message = err.response.data.message;
         }
-    };
+
+        alert(message);
+    }
+};
+
 
     const getPaymentBadge = (paymentStatus) => {
         if (paymentStatus === "PAID")
