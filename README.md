@@ -157,43 +157,39 @@ User → React UI → API Gateway → Microservice → MySQL DB → Response →
 
 ## 🔐 Login Page
 
-![Login](screenshots/login.png)
+![Login](https://github.com/user-attachments/assets/81a62e47-18ba-4050-9a74-39c1bb7e3403)
 
 ## 👑 Admin Dashboard – Menu Management
 
-![Admin Menu](screenshots/admin-menu.png)
+![AdminDashboard](https://github.com/user-attachments/assets/bf3f8790-b673-490e-96a3-c98a648cb4c3)
 
 ## 💸 Admin – Discount Management
 
-![Discount](screenshots/admin-discount.png)
+![discount](https://github.com/user-attachments/assets/ade5595f-6105-462f-98e9-795a7a650ca5)
 
 ## 👥 Admin – Staff Management
 
-![Staff](screenshots/admin-staff.png)
+![adminstaffcreation](https://github.com/user-attachments/assets/6e81c36a-9eff-4c22-ab20-f922cd8353e1)
 
 ## 📦 Admin – Orders & Bill Generation
 
-![Orders](screenshots/admin-orders.png)
+![View bill](https://github.com/user-attachments/assets/cd107544-6533-40cf-8e73-b02e4ba94b7e)
 
 ## ⭐ Admin – Customer Feedbacks
 
-![Feedback](screenshots/feedback.png)
+![feedback](https://github.com/user-attachments/assets/586da73f-a8bb-4aa6-b082-b15d6379c620)
 
 ## 🍽️ Customer Menu View
 
-![Customer Menu](screenshots/customer-menu.png)
+![customerdashboard](https://github.com/user-attachments/assets/51eb7129-2554-4f9e-a2eb-2d7798557724)
 
 ## 👨‍🍳 Kitchen Orders – Cook Dashboard
 
-![Kitchen](screenshots/kitchen-orders.png)
+![CookDashboard](https://github.com/user-attachments/assets/1b1126b2-70a0-4053-8ad7-41758e917ceb)
 
 ## 🧾 Invoice / Billing Screen
 
-![Invoice](screenshots/invoice.png)
-
-## 🗺️ Database ER Diagram
-
-![ER Diagram](screenshots/er-diagram.png)
+![invoice](https://github.com/user-attachments/assets/dc493f36-ae9e-4198-a929-e17f3e2978a3)
 
 ---
 
