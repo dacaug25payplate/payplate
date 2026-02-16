@@ -216,7 +216,9 @@ User → React UI → API Gateway → Microservice → MySQL DB → Response →
 ## 👨‍💻 Authors
 
 **Anurag Yadav**
+
 **Sujit Wandre**
+
 **Digvijay Kapurkar**
 
 ---
